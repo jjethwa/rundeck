@@ -11,6 +11,8 @@ This repository contains the source for the [Rundeck](http://rundeck.org/) [dock
 1. If RUNDECK_PASSWORD is not supplied, it will be randomly generated and shown via stdout.
 1. Supply the SERVER_URL or else you won't get too far :)
 1. As always, update passwords for pre-installed accounts
+1. I sometimes get errors when building the Docker image due to a timeout from the Rundeck download URL.  Trying again usually works.
+
 
 # Automated build
 
@@ -34,7 +36,3 @@ Start a new container and bind to host's port 4440
 
 ```/etc/rundeck```
 ```/var/lib/mysql```
-
-# Miscellaneous
-
-I sometimes get errors when building the Docker image due to a timeout from the Rundeck download URL.  Trying again usually works.
