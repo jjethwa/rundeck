@@ -24,7 +24,9 @@ Start a new container and bind to host's port 4440
 # Environment variables
 
 ```SERVER_URL``` - Full URL in the form ```http://MY.HOSTNAME.COM:4440```, ```http//123.456.789.012:4440```, etc
+
 ```RUNDECK_PASSWORD``` - MySQL 'rundeck' user password
+
 ```DEBIAN_SYS_MAINT_PASSWORD```
 
 # Volumes
