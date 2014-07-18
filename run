@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -e
+
+initfile=/etc/rundeck.init
+
+if [ ! -f "${initfile}" ]; then
+   SERVER_URL=${SERVER_URL:-"http://0.0.0.0:4440"}
+   RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
+   DEBIAN_SYS_MAINT_PASSWORD=$(pwgen -s 15 1)
+
+   echo "Initializing rundeck - This may take a few minutes"
+   echo "Generating rundeck key"
+   sudo -u rundeck ssh-keygen -t rsa -f /var/lib/rundeck/.ssh/id_rsa -N ''
+
+   /etc/init.d/mysql start
+
+   (
+   echo "CREATE DATABASE rundeckdb;"
+   echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+   echo "quit"
+   ) |
+   mysql
+   sleep 5
+   /etc/init.d/mysql stop
+   sed -i 's,grails.serverURL\=.*,grails.serverURL\='${SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
+   sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
+   sed -i 's,dataSource.url = .*,dataSource.url = jdbc:mysql://localhost/rundeckdb?autoReconnect=true,g' /etc/rundeck/rundeck-config.properties
+   echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
+   echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+
+echo -e "\n\n\n"
+echo "==================================================================="
+echo "MySQL user 'root' has no password but only allows local connections"
+echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
+echo "Rundeck public key:"
+cat /var/lib/rundeck/.ssh/id_rsa.pub
+echo "Server URL set to ${SERVER_URL}"
+echo "==================================================================="
+
+touch ${initfile}
+fi
+
+echo "Starting Supervisor.  You can safely CTRL-C and the container will continue to run with or without the -d (daemon) option"
+/usr/bin/supervisord >> /dev/null
