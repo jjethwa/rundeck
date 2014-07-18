@@ -1,7 +1,7 @@
 rundeck
 ==============
 
-This repository contains the source for the [rundeck](http://rundeck.org/) [docker](https://docker.io) image.
+This repository contains the source for the [Rundeck](http://rundeck.org/) [docker](https://docker.io) image.
 
 # Image details
 
@@ -34,3 +34,7 @@ Start a new container and bind to host's port 4440
 
 ```/etc/rundeck```
 ```/var/lib/mysql```
+
+# Miscellaneous
+
+I sometimes get errors when building the Docker image due to a timeout from the Rundeck download URL.  Trying again usually works.
