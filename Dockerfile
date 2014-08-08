@@ -1,34 +1,30 @@
-# Dockerfile for rundeck
-# https://github.com/jjethwa/rundeck
+# Dockerfile for sonatype-nexus
+# https://github.com/jjethwa/nexus
 
 FROM debian:wheezy
 
 MAINTAINER Jordan Jethwa
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV SERVER_URL http://localhost:4440
 
-RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen && apt-get clean
+RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends supervisor procps sudo ca-certificates openjdk-7-jre-headless && apt-get clean
 
-ADD http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.2.1-1-GA.deb /tmp/rundeck.deb
+ADD http://www.sonatype.org/downloads/nexus-latest-bundle.tar.gz /tmp/nexus.tar
+RUN tar xfv /tmp/nexus.tar -C /opt && rm /tmp/nexus.tar
+RUN /usr/sbin/useradd --create-home --home-dir /home/nexus --shell /bin/bash nexus
+RUN ln -s `find /opt -maxdepth 1 -type d -iname "nexus-*"` /opt/nexus
 
-RUN dpkg -i /tmp/rundeck.deb && rm /tmp/rundeck.deb
-RUN chown rundeck:rundeck /tmp/rundeck
-ADD run /opt/run
-RUN chmod u+x /opt/run
-RUN mkdir -p /var/lib/rundeck/.ssh
-RUN chown rundeck:rundeck /var/lib/rundeck/.ssh
+RUN chown -R nexus.nexus /opt/sonatype-work `find /opt -maxdepth 1 -type d -iname "nexus-*"`
 
 # Supervisor
 RUN mkdir -p /var/log/supervisor && mkdir -p /opt/supervisor
-ADD rundeck.conf /etc/supervisor/conf.d/rundeck.conf
-ADD rundeck /opt/supervisor/rundeck
-ADD mysql_supervisor /opt/supervisor/mysql_supervisor
-RUN chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mysql_supervisor
+ADD nexus.conf /etc/supervisor/conf.d/nexus.conf
+ADD nexus_supervisor /opt/supervisor/nexus_supervisor
+RUN chmod u+x /opt/supervisor/nexus_supervisor && chown nexus.nexus /opt/supervisor/nexus_supervisor
 
-EXPOSE 4440
+EXPOSE 8081
 
-VOLUME  ["/etc/rundeck", "/var/rundeck", "/var/lib/mysql"]
+VOLUME  ["/opt/sonatype-work", "/opt/nexus/conf"]
 
 # Start Supervisor
-ENTRYPOINT ["/opt/run"]
+CMD ["/usr/bin/supervisord"]
