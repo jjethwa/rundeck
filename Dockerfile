@@ -26,6 +26,9 @@ ADD rundeck /opt/supervisor/rundeck
 ADD mysql_supervisor /opt/supervisor/mysql_supervisor
 RUN chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mysql_supervisor
 
+# Fix for boot2docker VM issue
+RUN chmod 1777 /tmp
+
 EXPOSE 4440
 
 VOLUME  ["/etc/rundeck", "/var/rundeck", "/var/lib/mysql"]
