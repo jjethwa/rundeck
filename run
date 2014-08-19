@@ -4,6 +4,8 @@ set -e
 
 initfile=/etc/rundeck.init
 
+chmod 1777 /tmp
+
 if [ ! -f "${initfile}" ]; then
    SERVER_URL=${SERVER_URL:-"http://0.0.0.0:4440"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
