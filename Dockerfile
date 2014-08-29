@@ -26,7 +26,7 @@ ADD rundeck /opt/supervisor/rundeck
 ADD mysql_supervisor /opt/supervisor/mysql_supervisor
 RUN chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mysql_supervisor
 
-EXPOSE 4440
+EXPOSE 4440 4443
 
 VOLUME  ["/etc/rundeck", "/var/rundeck", "/var/lib/mysql"]
 
