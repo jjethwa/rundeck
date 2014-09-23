@@ -1,5 +1,6 @@
 # Dockerfile for rundeck
 # https://github.com/jjethwa/rundeck
+# Bump to 2.2.2
 
 FROM debian:wheezy
 
