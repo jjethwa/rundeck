@@ -20,7 +20,7 @@ if [ ! -f "${initfile}" ]; then
    /etc/init.d/mysql start
 
    (
-   echo "CREATE DATABASE rundeckdb;"
+   echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
    echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
    echo "quit"
    ) |
