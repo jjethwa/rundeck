@@ -12,8 +12,10 @@ if [ ! -f "${initfile}" ]; then
    DEBIAN_SYS_MAINT_PASSWORD=$(pwgen -s 15 1)
 
    echo "Initializing rundeck - This may take a few minutes"
-   echo "Generating rundeck key"
-   sudo -u rundeck ssh-keygen -t rsa -f /var/lib/rundeck/.ssh/id_rsa -N ''
+   if [ ! -f /var/lib/rundeck/.ssh/id_rsa ]; then
+       echo "Generating rundeck key"
+       sudo -u rundeck ssh-keygen -t rsa -f /var/lib/rundeck/.ssh/id_rsa -N ''
+   fi
 
    /etc/init.d/mysql start
 
