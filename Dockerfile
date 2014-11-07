@@ -1,6 +1,6 @@
 # Dockerfile for rundeck
 # https://github.com/jjethwa/rundeck
-# Bump to 2.3.1
+# Bump to 2.3.2
 
 FROM debian:wheezy
 
@@ -11,7 +11,7 @@ ENV SERVER_URL http://localhost:4440
 
 RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen && apt-get clean
 
-ADD http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.3.1-1-GA.deb /tmp/rundeck.deb
+ADD http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.3.2-1-GA.deb /tmp/rundeck.deb
 
 RUN dpkg -i /tmp/rundeck.deb && rm /tmp/rundeck.deb
 RUN chown rundeck:rundeck /tmp/rundeck
