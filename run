@@ -6,6 +6,12 @@ initfile=/etc/rundeck.init
 
 chmod 1777 /tmp
 
+# chown directories and files that might be coming from volumes
+chown -R mysql:mysql /var/lib/mysql
+chown -R rundeck:rundeck /etc/rundeck
+chown -R rundeck:rundeck /var/rundeck
+
+
 if [ ! -f "${initfile}" ]; then
    SERVER_URL=${SERVER_URL:-"http://0.0.0.0:4440"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
