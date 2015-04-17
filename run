@@ -16,6 +16,15 @@ if [ ! -f "${initfile}" ]; then
    SERVER_URL=${SERVER_URL:-"http://0.0.0.0:4440"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DEBIAN_SYS_MAINT_PASSWORD=${DEBIAN_SYS_MAINT_PASSWORD:-$(pwgen -s 15 1)}
+   
+update_user_password () {
+   (
+   echo "UPDATE mysql.user SET password=PASSWORD('${2}') WHERE user='${1}';"
+   echo "FLUSH PRIVILEGES;"
+   echo "quit"
+   ) |
+   mysql
+}
 
    echo "Initializing rundeck - This may take a few minutes"
    if [ ! -f /var/lib/rundeck/.ssh/id_rsa ]; then
