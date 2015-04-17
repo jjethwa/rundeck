@@ -15,7 +15,7 @@ chown -R rundeck:rundeck /var/rundeck
 if [ ! -f "${initfile}" ]; then
    SERVER_URL=${SERVER_URL:-"http://0.0.0.0:4440"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
-   DEBIAN_SYS_MAINT_PASSWORD=$(pwgen -s 15 1)
+   DEBIAN_SYS_MAINT_PASSWORD=${DEBIAN_SYS_MAINT_PASSWORD:-$(pwgen -s 15 1)}
 
    echo "Initializing rundeck - This may take a few minutes"
    if [ ! -f /var/lib/rundeck/.ssh/id_rsa ]; then
@@ -24,6 +24,10 @@ if [ ! -f "${initfile}" ]; then
    fi
 
    /etc/init.d/mysql start
+   
+   # Set debian-sys-maint password
+   update_user_password debian-sys-maint ${DEBIAN_SYS_MAINT_PASSWORD}
+   sed -i 's,password\ \=\ .*,password\ \=\ '${DEBIAN_SYS_MAINT_PASSWORD}',g' /etc/mysql/debian.cnf
 
    (
    echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
