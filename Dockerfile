@@ -9,7 +9,7 @@ MAINTAINER Jordan Jethwa
 ENV DEBIAN_FRONTEND noninteractive
 ENV SERVER_URL http://localhost:4440
 
-RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen && apt-get clean
+RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen curl && apt-get clean
 
 ADD http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.5.0-1-GA.deb /tmp/rundeck.deb
 
