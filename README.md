@@ -16,23 +16,33 @@ This repository contains the source for the [Rundeck](http://rundeck.org/) [dock
 
 # Automated build
 
-```docker pull jordan/rundeck```
+```
+docker pull jordan/rundeck
+```
 
 # Usage
 Start a new container and bind to host's port 4440
 
-```sudo docker run -p 4440:4440 -e SERVER_URL=http://MY.HOSTNAME.COM:4440 -t jordan/rundeck:latest```
+```
+sudo docker run -p 4440:4440 -e SERVER_URL=http://MY.HOSTNAME.COM:4440 -t jordan/rundeck:latest
+```
 
 # Environment variables
 
-```SERVER_URL``` - Full URL in the form ```http://MY.HOSTNAME.COM:4440```, ```http//123.456.789.012:4440```, etc
+```
+SERVER_URL - Full URL in the form http://MY.HOSTNAME.COM:4440, http//123.456.789.012:4440, etc
 
-```RUNDECK_PASSWORD``` - MySQL 'rundeck' user password
+RUNDECK_PASSWORD - MySQL 'rundeck' user password
 
-```DEBIAN_SYS_MAINT_PASSWORD```
+DEBIAN_SYS_MAINT_PASSWORD
+```
 
 # Volumes
 
-
-```/etc/rundeck```
-```/var/lib/mysql```
+```
+/etc/rundeck
+/var/rundeck
+/var/lib/rundec
+/var/lib/mysql
+/var/log/rundeck
+```
