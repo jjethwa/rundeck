@@ -29,7 +29,7 @@ RUN chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mysql_supervi
 
 EXPOSE 4440 4443
 
-VOLUME  ["/etc/rundeck", "/var/rundeck", "/var/lib/rundeck", "/var/lib/mysql"]
+VOLUME  ["/etc/rundeck", "/var/rundeck", "/var/lib/rundeck", "/var/lib/mysql", "/var/log/rundeck"]
 
 # Start Supervisor
 ENTRYPOINT ["/opt/run"]
