@@ -10,6 +10,7 @@ chmod 1777 /tmp
 chown -R mysql:mysql /var/lib/mysql
 chown -R rundeck:rundeck /etc/rundeck
 chown -R rundeck:rundeck /var/rundeck
+chown -R rundeck:adm /var/log/rundeck
 
 
 if [ ! -f "${initfile}" ]; then
