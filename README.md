@@ -32,6 +32,8 @@ sudo docker run -p 4440:4440 -e SERVER_URL=http://MY.HOSTNAME.COM:4440 -t jordan
 ```
 SERVER_URL - Full URL in the form http://MY.HOSTNAME.COM:4440, http//123.456.789.012:4440, etc
 
+DATABASE_URL - For use with (container) external database
+
 RUNDECK_PASSWORD - MySQL 'rundeck' user password
 
 DEBIAN_SYS_MAINT_PASSWORD
