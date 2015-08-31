@@ -11,6 +11,7 @@ chown -R mysql:mysql /var/lib/mysql
 chown -R rundeck:rundeck /etc/rundeck
 chown -R rundeck:rundeck /var/rundeck
 chown -R rundeck:adm /var/log/rundeck
+chown -R rundeck:rundeck /var/lib/rundeck
 
 
 if [ ! -f "${initfile}" ]; then
@@ -28,18 +29,18 @@ update_user_password () {
    mysql
 }
 
-   echo "Initializing rundeck - This may take a few minutes"
+   echo "=>Initializing rundeck - This may take a few minutes"
    if [ ! -f /var/lib/rundeck/.ssh/id_rsa ]; then
-       echo "Generating rundeck key"
+       echo "=>Generating rundeck key"
        sudo -u rundeck ssh-keygen -t rsa -f /var/lib/rundeck/.ssh/id_rsa -N ''
    fi
 
    if [ "$(ls -A /var/lib/mysql)" ]; then
        /etc/init.d/mysql start
    else
-       echo "MySQL datadir is empty...initializing"
+       echo "=>MySQL datadir is empty...initializing"
        /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-       echo "Starting MySQL...ignore warning about debian-sys-maint user, it will be granted permissions momentarily"
+       echo "=>Starting MySQL...ignore warning about debian-sys-maint user, it will be granted permissions momentarily"
        /etc/init.d/mysql start
        sleep 5
        (
