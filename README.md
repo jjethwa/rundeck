@@ -44,7 +44,7 @@ DEBIAN_SYS_MAINT_PASSWORD
 ```
 /etc/rundeck
 /var/rundeck
-/var/lib/rundec
+/var/lib/rundeck - Not recommended to use as a volume as it contains webapp.  For SSH key you can use the this volume: /var/lib/rundeck/.ssh
 /var/lib/mysql
 /var/log/rundeck
 ```
