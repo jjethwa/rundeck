@@ -13,18 +13,16 @@ RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-inst
 
 ADD http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.5.3-1-GA.deb /tmp/rundeck.deb
 
+ADD content/ /
+
 RUN dpkg -i /tmp/rundeck.deb && rm /tmp/rundeck.deb
 RUN chown rundeck:rundeck /tmp/rundeck
-ADD run /opt/run
 RUN chmod u+x /opt/run
 RUN mkdir -p /var/lib/rundeck/.ssh
 RUN chown rundeck:rundeck /var/lib/rundeck/.ssh
 
 # Supervisor
 RUN mkdir -p /var/log/supervisor && mkdir -p /opt/supervisor
-ADD rundeck.conf /etc/supervisor/conf.d/rundeck.conf
-ADD rundeck /opt/supervisor/rundeck
-ADD mysql_supervisor /opt/supervisor/mysql_supervisor
 RUN chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mysql_supervisor
 
 EXPOSE 4440 4443
