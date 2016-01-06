@@ -16,7 +16,7 @@ chown -R rundeck:rundeck /opt/rundeck-defaults
 
 
 if [ ! -f "${initfile}" ]; then
-   SERVER_URL=${SERVER_URL:-"http://0.0.0.0:4440"}
+   SERVER_URL=${SERVER_URL:-"https://0.0.0.0:4443"}
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DEBIAN_SYS_MAINT_PASSWORD=${DEBIAN_SYS_MAINT_PASSWORD:-$(pwgen -s 15 1)}
@@ -33,7 +33,7 @@ update_user_password () {
    echo "=>Initializing rundeck - This may take a few minutes"
    if [ ! -f /var/lib/rundeck/.ssh/id_rsa ]; then
        echo "=>Generating rundeck key"
-       sudo -u rundeck ssh-keygen -t rsa -f /var/lib/rundeck/.ssh/id_rsa -N ''
+       sudo -u rundeck ssh-keygen -t rsa -b 4096 -f /var/lib/rundeck/.ssh/id_rsa -N ''
    fi
    
    if [ "$(ls -A /etc/rundeck)" ]; then
@@ -42,6 +42,12 @@ update_user_password () {
        echo "=>/etc/rundeck empty...setting up defaults"
        cp -R /opt/rundeck-defaults/* /etc/rundeck
        chown -R rundeck:rundeck /etc/rundeck
+   fi
+
+   if [ ! -f /etc/rundeck/ssl/truststore ]; then
+       echo "=>Generating ssl cert"
+       sudo -u rundeck keytool -keystore /etc/rundeck/ssl/keystore -alias rundeck -genkey -keyalg RSA -keypass adminadmin -storepass adminadmin -dname "cn=localhost, o=OME, c=DE" && \
+       cp /etc/rundeck/ssl/keystore /etc/rundeck/ssl/truststore
    fi
 
    if [ "$(ls -A /var/lib/mysql)" ]; then

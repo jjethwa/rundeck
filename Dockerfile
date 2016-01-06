@@ -7,7 +7,7 @@ FROM debian:jessie
 MAINTAINER Jordan Jethwa
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV SERVER_URL http://localhost:4440
+ENV SERVER_URL https://localhost:4443
 
 RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen curl git && apt-get clean
 
