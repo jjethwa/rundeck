@@ -11,7 +11,7 @@ ENV SERVER_URL https://localhost:4443
 
 RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen curl git && apt-get clean
 
-ADD http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.6.2-1-GA.deb /tmp/rundeck.deb
+ADD http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.6.3-1-GA.deb /tmp/rundeck.deb
 
 ADD content/ /
 
