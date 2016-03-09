@@ -97,6 +97,9 @@ echo -e "\n\n\n"
 echo "==================================================================="
 echo "MySQL user 'root' has no password but only allows local connections"
 echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
+if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
+   echo "Rundeck project storage type set to db"
+fi
 echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
 echo "Rundeck public key:"
 cat /var/lib/rundeck/.ssh/id_rsa.pub
