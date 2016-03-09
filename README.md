@@ -40,6 +40,8 @@ RUNDECK_PASSWORD - MySQL 'rundeck' user password
 
 RUNDECK_STORAGE_PROVIDER - Options file (default) or db.  See: http://rundeck.org/docs/plugins-user-guide/configuring.html#storage-plugins
 
+RUNDECK_PROJECT_STORAGE_TYPE - Options file (default) or db.  See: http://rundeck.org/docs/administration/setting-up-an-rdb-datasource.html
+
 DEBIAN_SYS_MAINT_PASSWORD
 ```
 

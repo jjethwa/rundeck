@@ -89,6 +89,10 @@ update_user_password () {
       echo "rundeck.storage.provider.1.path=/" >> /etc/rundeck/rundeck-config.properties
    fi
 
+   if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
+      echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
+   fi
+
 echo -e "\n\n\n"
 echo "==================================================================="
 echo "MySQL user 'root' has no password but only allows local connections"
