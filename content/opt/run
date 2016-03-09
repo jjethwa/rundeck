@@ -20,6 +20,7 @@ if [ ! -f "${initfile}" ]; then
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DEBIAN_SYS_MAINT_PASSWORD=${DEBIAN_SYS_MAINT_PASSWORD:-$(pwgen -s 15 1)}
+   RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
    
 update_user_password () {
    (
@@ -83,10 +84,16 @@ update_user_password () {
    echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
    echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
 
+   if [ "${RUNDECK_STORAGE_PROVIDER}" == "db" ]; then
+      echo "rundeck.storage.provider.1.type=db" >> /etc/rundeck/rundeck-config.properties
+      echo "rundeck.storage.provider.1.path=/" >> /etc/rundeck/rundeck-config.properties
+   fi
+
 echo -e "\n\n\n"
 echo "==================================================================="
 echo "MySQL user 'root' has no password but only allows local connections"
 echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
+echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
 echo "Rundeck public key:"
 cat /var/lib/rundeck/.ssh/id_rsa.pub
 echo "Server URL set to ${SERVER_URL}"

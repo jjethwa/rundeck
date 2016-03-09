@@ -36,6 +36,8 @@ DATABASE_URL - For use with (container) external database
 
 RUNDECK_PASSWORD - MySQL 'rundeck' user password
 
+RUNDECK_STORAGE_PROVIDER - Options file (default) or db.  See: http://rundeck.org/docs/plugins-user-guide/configuring.html#storage-plugins
+
 DEBIAN_SYS_MAINT_PASSWORD
 ```
 
