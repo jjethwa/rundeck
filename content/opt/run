@@ -21,6 +21,7 @@ if [ ! -f "${initfile}" ]; then
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DEBIAN_SYS_MAINT_PASSWORD=${DEBIAN_SYS_MAINT_PASSWORD:-$(pwgen -s 15 1)}
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
+   RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
    
 update_user_password () {
    (
@@ -97,9 +98,7 @@ echo -e "\n\n\n"
 echo "==================================================================="
 echo "MySQL user 'root' has no password but only allows local connections"
 echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
-if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
-   echo "Rundeck project storage type set to db"
-fi
+echo "Rundeck project storage type set to ${RUNDECK_PROJECT_STORAGE_TYPE}"
 echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
 echo "Rundeck public key:"
 cat /var/lib/rundeck/.ssh/id_rsa.pub
