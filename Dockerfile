@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV SERVER_URL https://localhost:4443
 ENV RUNDECK_STORAGE_PROVIDER file
 ENV RUNDECK_PROJECT_STORAGE_TYPE file
+ENV NO_LOCAL_MYSQL false
 
 RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen curl git && apt-get clean
 

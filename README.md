@@ -43,6 +43,8 @@ RUNDECK_STORAGE_PROVIDER - Options file (default) or db.  See: http://rundeck.or
 RUNDECK_PROJECT_STORAGE_TYPE - Options file (default) or db.  See: http://rundeck.org/docs/administration/setting-up-an-rdb-datasource.html
 
 DEBIAN_SYS_MAINT_PASSWORD
+
+NO_LOCAL_MYSQL - false (default).  Set to true if using an external MySQL container or instance.  Make sure to set DATABASE_URL and RUNDECK_PASSWORD (used for JDBC connection to MySQL).  Further details for setting up MYSQL: http://rundeck.org/docs/administration/setting-up-an-rdb-datasource.html
 ```
 
 # Volumes

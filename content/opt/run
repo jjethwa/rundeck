@@ -22,6 +22,7 @@ if [ ! -f "${initfile}" ]; then
    DEBIAN_SYS_MAINT_PASSWORD=${DEBIAN_SYS_MAINT_PASSWORD:-$(pwgen -s 15 1)}
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
+   NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
    
 update_user_password () {
    (
@@ -52,33 +53,41 @@ update_user_password () {
        cp /etc/rundeck/ssl/keystore /etc/rundeck/ssl/truststore
    fi
 
-   if [ "$(ls -A /var/lib/mysql)" ]; then
-       /etc/init.d/mysql start
-   else
-       echo "=>MySQL datadir is empty...initializing"
-       /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-       echo "=>Starting MySQL...ignore warning about debian-sys-maint user, it will be granted permissions momentarily"
-       /etc/init.d/mysql start
-       sleep 5
-       (
-       echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '${DEBIAN_SYS_MAINT_PASSWORD}';"
-       echo "quit"
-       ) |
-       mysql
-   fi
+   if [ "${NO_LOCAL_MYSQL}" == "false" ]; then
+      echo "=>Initializing local MySQL..."
+      if [ "$(ls -A /var/lib/mysql)" ]; then
+         /etc/init.d/mysql start
+      else
+         echo "=>MySQL datadir is empty...initializing"
+         /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+         echo "=>Starting MySQL...ignore warning about debian-sys-maint user, it will be granted permissions momentarily"
+         /etc/init.d/mysql start
+         sleep 5
+         (
+         echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '${DEBIAN_SYS_MAINT_PASSWORD}';"
+         echo "quit"
+         ) |
+         mysql
+     fi
    
-   # Set debian-sys-maint password
-   update_user_password debian-sys-maint ${DEBIAN_SYS_MAINT_PASSWORD}
-   sed -i 's,password\ \=\ .*,password\ \=\ '${DEBIAN_SYS_MAINT_PASSWORD}',g' /etc/mysql/debian.cnf
+     # Set debian-sys-maint password
+     update_user_password debian-sys-maint ${DEBIAN_SYS_MAINT_PASSWORD}
+     sed -i 's,password\ \=\ .*,password\ \=\ '${DEBIAN_SYS_MAINT_PASSWORD}',g' /etc/mysql/debian.cnf
 
-   (
-   echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
-   echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
-   echo "quit"
-   ) |
-   mysql
-   sleep 5
-   /etc/init.d/mysql stop
+     (
+     echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
+     echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+     echo "quit"
+     ) |
+     mysql
+     sleep 5
+     /etc/init.d/mysql stop
+     # Add MySQL to supervisord conf
+     cat /opt/mysql.conf >> /etc/supervisor/conf.d/rundeck.conf
+   else
+      echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
+   fi
+
    sed -i 's,grails.serverURL\=.*,grails.serverURL\='${SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
@@ -96,7 +105,11 @@ update_user_password () {
 
 echo -e "\n\n\n"
 echo "==================================================================="
-echo "MySQL user 'root' has no password but only allows local connections"
+if [ "${NO_LOCAL_MYSQL}" == "true" ]; then
+   echo "NO_LOCAL_MYSQL set to true so local MySQL has not been configured or started"
+else
+   echo "MySQL user 'root' has no password but only allows local connections"
+fi
 echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
 echo "Rundeck project storage type set to ${RUNDECK_PROJECT_STORAGE_TYPE}"
 echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
