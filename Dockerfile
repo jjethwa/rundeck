@@ -28,6 +28,9 @@ RUN chown rundeck:rundeck /var/lib/rundeck/.ssh
 RUN mkdir -p /var/log/supervisor && mkdir -p /opt/supervisor
 RUN chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mysql_supervisor
 
+# Give a chance to customize default installation
+RUN sed -i "s/export RDECK_JVM=\"/export RDECK_JVM=\"\${RDECK_JVM} /" /etc/rundeck/profile
+
 EXPOSE 4440 4443
 
 VOLUME  ["/etc/rundeck", "/var/rundeck", "/var/lib/rundeck", "/var/lib/mysql", "/var/log/rundeck"]
