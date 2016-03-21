@@ -14,7 +14,7 @@ ENV NO_LOCAL_MYSQL false
 
 RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen curl git && apt-get clean
 
-ADD http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.6.4-1-GA.deb /tmp/rundeck.deb
+RUN curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.6.4-1-GA.deb
 
 ADD content/ /
 
