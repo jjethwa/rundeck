@@ -17,6 +17,17 @@ chown -R rundeck:rundeck /opt/rundeck-defaults
 
 if [ ! -f "${initfile}" ]; then
    SERVER_URL=${SERVER_URL:-"https://0.0.0.0:4443"}
+   SERVER_HOSTNAME=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $1}')
+   SERVER_PROTO=$(echo ${SERVER_URL} | awk -F/ '{print $1}' | awk -F: '{print $1}')
+   SERVER_PORT=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $2}')
+   if [ -z ${SERVER_PORT} ]; then
+      # No port in SERVER_URL so assume 443 for HTTPS or 80 otherwise
+      if [ ${SERVER_PROTO} == "https" ]; then
+         SERVER_PORT=443
+      else
+         SERVER_PORT=80
+      fi
+   fi
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DEBIAN_SYS_MAINT_PASSWORD=${DEBIAN_SYS_MAINT_PASSWORD:-$(pwgen -s 15 1)}
@@ -93,6 +104,12 @@ update_user_password () {
    sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
    echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
    echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+
+   # framework.properties
+   sed -i 's,framework.server.name\ \=.*,framework.server.name\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
+   sed -i 's,framework.server.hostname\ \=.*,framework.server.hostname\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
+   sed -i 's,framework.server.port\ \=.*,framework.server.port\ \=\ '${SERVER_PORT}',g' /etc/rundeck/framework.properties
+   sed -i 's,framework.server.url\ \=.*,framework.server.url\ \=\ '${SERVER_URL}',g' /etc/rundeck/framework.properties
 
    if [ "${RUNDECK_STORAGE_PROVIDER}" == "db" ]; then
       echo "rundeck.storage.provider.1.type=db" >> /etc/rundeck/rundeck-config.properties
