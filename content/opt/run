@@ -102,8 +102,16 @@ update_user_password () {
    sed -i 's,grails.serverURL\=.*,grails.serverURL\='${SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
-   echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
-   echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+   if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
+      : 
+   else
+      echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
+   fi
+   if grep -q dataSource.password /etc/rundeck/rundeck-config.properties ; then
+      sed -i 's,dataSource.password = .*,dataSource.password = '${RUNDECK_PASSWORD}',g' /etc/rundeck/rundeck-config.properties
+   else
+      echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+   fi
 
    # framework.properties
    sed -i 's,framework.server.name\ \=.*,framework.server.name\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
