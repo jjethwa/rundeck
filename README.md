@@ -5,9 +5,9 @@ This repository contains the source for the [Rundeck](http://rundeck.org/) [dock
 
 # Image details
 
-1. Based on debian:wheezy
+1. Based on debian:jessie
 1. Supervisor, Apache2, and rundeck
-1. No SSH.  Use [nsenter](https://github.com/jpetazzo/nsenter)
+1. No SSH.  Use docker exec or [nsenter](https://github.com/jpetazzo/nsenter)
 1. If RUNDECK_PASSWORD is not supplied, it will be randomly generated and shown via stdout.
 1. Supply the SERVER_URL or else you won't get too far :)
 1. As always, update passwords for pre-installed accounts
