@@ -27,6 +27,9 @@ Start a new container and bind to host's port 4440
 sudo docker run -p 4440:4440 -e SERVER_URL=http://MY.HOSTNAME.COM:4440 -t jordan/rundeck:latest
 ```
 
+# Rundeck plugins
+To add (external) plugins, add the jars to the /opt/rundeck-plugins volume and they will be copied over to Rundeck's libext directory at container startup
+
 # Environment variables
 
 ```
@@ -55,4 +58,5 @@ NO_LOCAL_MYSQL - false (default).  Set to true if using an external MySQL contai
 /var/lib/rundeck - Not recommended to use as a volume as it contains webapp.  For SSH key you can use the this volume: /var/lib/rundeck/.ssh
 /var/lib/mysql
 /var/log/rundeck
+/opt/rundeck-plugins - For adding external plugins
 ```
