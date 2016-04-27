@@ -128,8 +128,8 @@ update_user_password () {
       echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
    fi
    # Plugins
-   if [ -d /opt/rundeck-plugins ]; then
-     cp /opt/rundeck-plugins/*.jar /var/lib/rundeck/libext 2>/dev/null
+   if [[ -d /opt/rundeck-plugins ]]; then
+      cp /opt/rundeck-plugins/*.jar /var/lib/rundeck/libext 2>/dev/null
    fi
 
 echo -e "\n\n\n"
