@@ -129,7 +129,7 @@ update_user_password () {
    fi
    # Plugins
    if [ -d /opt/rundeck-plugins ]; then
-     cp /opt/rundeck-plugins/*.jar /var/lib/rundeck/libext > /dev/null 2>&1
+     cp /opt/rundeck-plugins/*.jar /var/lib/rundeck/libext 2>/dev/null
    fi
 
 echo -e "\n\n\n"
