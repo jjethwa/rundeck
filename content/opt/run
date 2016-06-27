@@ -136,6 +136,10 @@ update_user_password () {
       echo "=>Installing plugins from /opt/rundeck-plugins"
       cp /opt/rundeck-plugins/*.zip /var/lib/rundeck/libext 2>/dev/null
    fi
+   if ls /opt/rundeck-plugins/*.groovy 1> /dev/null 2>&1; then
+      echo "=>Installing plugins from /opt/rundeck-plugins"
+      cp /opt/rundeck-plugins/*.groovy /var/lib/rundeck/libext 2>/dev/null
+   fi
 
 echo -e "\n\n\n"
 echo "==================================================================="
