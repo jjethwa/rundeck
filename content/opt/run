@@ -119,6 +119,10 @@ update_user_password () {
    sed -i 's,framework.server.port\ \=.*,framework.server.port\ \=\ '${SERVER_PORT}',g' /etc/rundeck/framework.properties
    sed -i 's,framework.server.url\ \=.*,framework.server.url\ \=\ '${SERVER_URL}',g' /etc/rundeck/framework.properties
 
+   [[ -n "${RUNDECK_ADMIN_PASSWORD}" ]] && sed -i \
+       's,framework.server.password\ \=.*,framework.server.password\ \=\ '${RUNDECK_ADMIN_PASSWORD}',g' \
+       /etc/rundeck/framework.properties
+
    if [ "${RUNDECK_STORAGE_PROVIDER}" == "db" ]; then
       echo "rundeck.storage.provider.1.type=db" >> /etc/rundeck/rundeck-config.properties
       echo "rundeck.storage.provider.1.path=/" >> /etc/rundeck/rundeck-config.properties
