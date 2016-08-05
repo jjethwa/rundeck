@@ -39,6 +39,10 @@ RDECK_JVM - Additional parameters sent to the rundeck JVM (ex: -Dserver.web.cont
 
 DATABASE_URL - For use with (container) external database
 
+RUNDECK_UID - The unix user ID to be used for the rundeck account when rundeck is booted.  This is useful for embedding this docker container into your development environment sharing files via docker volumes between the container and your host OS.  RUNDECK_GID also needs to be defined for this overload to take place.
+
+RUNDECK_GID - The unix group ID to be used for the rundeck account when rundeck is booted.  This is useful for embedding this docker container into your development environment sharing files via docker volumes between the container and your host OS.  RUNDECK_UID also needs to be defined for this overload to take place.
+
 RUNDECK_PASSWORD - MySQL 'rundeck' user password
 
 RUNDECK_STORAGE_PROVIDER - Options file (default) or db.  See: http://rundeck.org/docs/plugins-user-guide/configuring.html#storage-plugins
