@@ -6,6 +6,12 @@ initfile=/etc/rundeck.init
 
 chmod 1777 /tmp
 
+if [[ -n "${RUNDECK_GID}" && -n "${RUNDECK_UID}" ]]; then
+  echo "Setting rundeck account to ${RUNDECK_UID}:${RUNDECK_GID}"
+  groupmod -o -g ${RUNDECK_GID} rundeck
+  usermod -o -u ${RUNDECK_UID} -g ${RUNDECK_GID} rundeck
+fi
+
 # chown directories and files that might be coming from volumes
 chown -R mysql:mysql /var/lib/mysql
 chown -R rundeck:rundeck /etc/rundeck

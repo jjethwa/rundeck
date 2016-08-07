@@ -20,7 +20,7 @@ function shutdown()
 
 echo -n "`date +"%d.%m.%Y %T.%3N"` - Starting ${prog}"
 cd /var/log/rundeck
-nohup su -s /bin/bash rundeck -c "$rundeckd" &>>/var/log/rundeck/service.log &
+nohup su -s /bin/bash rundeck -c "$rundeckd &>>/var/log/rundeck/service.log" &
 PID=$!
 echo $PID > $PIDFILE
 
