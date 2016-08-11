@@ -35,6 +35,8 @@ To add (external) plugins, add the jars to the /opt/rundeck-plugins volume and t
 ```
 SERVER_URL - Full URL in the form http://MY.HOSTNAME.COM:4440, http//123.456.789.012:4440, etc
 
+EXTERNAL_SERVER_URL - Use this if you are running rundeck behind a proxy.  This is useful if you run rundeck through some kind of external network gateway/load balancer.
+
 RDECK_JVM - Additional parameters sent to the rundeck JVM (ex: -Dserver.web.context=/rundeck)
 
 DATABASE_URL - For use with (container) external database

@@ -23,6 +23,7 @@ chown -R rundeck:rundeck /opt/rundeck-defaults
 
 if [ ! -f "${initfile}" ]; then
    SERVER_URL=${SERVER_URL:-"https://0.0.0.0:4443"}
+   EXTERNAL_SERVER_URL=${EXTERNAL_SERVER_URL:-"${SERVER_URL}"}
    SERVER_HOSTNAME=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $1}')
    SERVER_PROTO=$(echo ${SERVER_URL} | awk -F/ '{print $1}' | awk -F: '{print $1}')
    SERVER_PORT=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $2}')
@@ -105,7 +106,7 @@ update_user_password () {
       echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
    fi
 
-   sed -i 's,grails.serverURL\=.*,grails.serverURL\='${SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
+   sed -i 's,grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
