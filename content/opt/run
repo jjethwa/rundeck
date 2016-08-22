@@ -137,9 +137,13 @@ update_user_password () {
       # rundeck-cli tools.  To make the new CLI tools easier to use, go ahead and add an API token for the
       # admin account as a hash of the admin password.
       if [[ -n "${EXTERNAL_SERVER_URL}" ]]; then
-        echo "rundeck.tokens.file=/etc/rundeck/tokens.properties" >> /etc/rundeck/framework.properties
+        grep --silent "rundeck\.tokens\.file" /etc/rundeck/framework.properties || \
+          echo "rundeck.tokens.file=/etc/rundeck/tokens.properties" >> /etc/rundeck/framework.properties
         mytoken=$(printf '%s' "${RUNDECK_ADMIN_PASSWORD}" | md5sum | cut -d ' ' -f 1)
-        echo "admin: ${mytoken}" >> /etc/rundeck/tokens.properties
+        [[ -e /etc/rundeck/tokens.properties ]] \
+          && grep --silent "^admin:" /etc/rundeck/tokens.properties \
+          && sed -i -e "s,^admin:.*,admin: ${mytoken},g" /etc/rundeck/tokens.properties \
+          || echo "admin: ${mytoken}" >> /etc/rundeck/tokens.properties
         chown rundeck:rundeck /etc/rundeck/tokens.properties
       fi
    fi
