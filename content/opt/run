@@ -139,7 +139,7 @@ update_user_password () {
       if [[ -n "${EXTERNAL_SERVER_URL}" ]]; then
         echo "rundeck.tokens.file=/etc/rundeck/tokens.properties" >> /etc/rundeck/framework.properties
         mytoken=$(printf '%s' "${RUNDECK_ADMIN_PASSWORD}" | md5sum | cut -d ' ' -f 1)
-        echo "admin:${mytoken}" >> /etc/rundeck/tokens.properties
+        echo "admin: ${mytoken}" >> /etc/rundeck/tokens.properties
         chown rundeck:rundeck /etc/rundeck/tokens.properties
       fi
    fi
