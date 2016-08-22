@@ -15,10 +15,11 @@ ENV NO_LOCAL_MYSQL false
 RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen curl git && apt-get clean
 
 RUN curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.6.9-1-GA.deb
+RUN curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v0.1.19/rundeck-cli_0.1.19-1_all.deb
 
 ADD content/ /
 
-RUN dpkg -i /tmp/rundeck.deb && rm /tmp/rundeck.deb
+RUN dpkg -i /tmp/rundeck*.deb && rm /tmp/rundeck*.deb
 RUN chown rundeck:rundeck /tmp/rundeck
 RUN chmod u+x /opt/run
 RUN mkdir -p /var/lib/rundeck/.ssh
