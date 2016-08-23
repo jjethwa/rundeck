@@ -1,6 +1,5 @@
 # Dockerfile for rundeck
 # https://github.com/jjethwa/rundeck
-# Bump to 2.6.8
 
 FROM debian:jessie
 
