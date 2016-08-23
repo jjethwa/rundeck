@@ -12,7 +12,7 @@ ENV RUNDECK_STORAGE_PROVIDER file
 ENV RUNDECK_PROJECT_STORAGE_TYPE file
 ENV NO_LOCAL_MYSQL false
 
-RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openjdk-7-jre-headless openssh-client mysql-server mysql-client pwgen curl git && apt-get clean
+RUN apt-get -qq update && apt-get -qqy upgrade && apt-get -qqy install --no-install-recommends bash supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git && echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list && apt-get -qqy install --no-install-recommends -t jessie-backports openjdk-8-jre-headless && apt-get clean
 
 RUN curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.6.9-1-GA.deb
 RUN curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v0.1.19/rundeck-cli_0.1.19-1_all.deb
