@@ -23,7 +23,7 @@ chown -R rundeck:rundeck /opt/rundeck-defaults
 
 if [ ! -f "${initfile}" ]; then
    SERVER_URL=${SERVER_URL:-"https://0.0.0.0:4443"}
-   EXTERNAL_SERVER_URL=${EXTERNAL_SERVER_URL:-"${SERVER_URL}"}
+   EXTERNAL_URL=${EXTERNAL_SERVER_URL:-"${SERVER_URL}"}
    SERVER_HOSTNAME=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $1}')
    SERVER_PROTO=$(echo ${SERVER_URL} | awk -F/ '{print $1}' | awk -F: '{print $1}')
    SERVER_PORT=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $2}')
@@ -106,7 +106,7 @@ update_user_password () {
       echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
    fi
 
-   sed -i 's,grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
+   sed -i 's,grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_URL}',g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
@@ -127,11 +127,25 @@ update_user_password () {
    sed -i 's,framework.server.url\ \=.*,framework.server.url\ \=\ '${SERVER_URL}',g' /etc/rundeck/framework.properties
 
    # if the admin pwd is still the default password and RUNDECK_ADMIN_PASSWORD is defined
-   if [[ -n "${RUNDECK_ADMIN_PASSWORD}" && $( grep --silent '^admin:admin,' /etc/rundeck/realm.properties ) ]]; then
+   if $(grep --silent '^admin:admin,' /etc/rundeck/realm.properties) && [[ -n "${RUNDECK_ADMIN_PASSWORD}" ]]; then
       sed -i \
          's,framework.server.password\ \=.*,framework.server.password\ \=\ '${RUNDECK_ADMIN_PASSWORD}',g' \
          /etc/rundeck/framework.properties
       sed -i 's*^admin:admin,*admin:'${RUNDECK_ADMIN_PASSWORD}',*g' /etc/rundeck/realm.properties
+      # If EXTERNAL_SERVER_URL is being used, the inside/outside ports for rundeck confuse the standard
+      # CLI tools like rd-jobs, rd-project and they won't work.  You will need to use the new and improved
+      # rundeck-cli tools.  To make the new CLI tools easier to use, go ahead and add an API token for the
+      # admin account as a hash of the admin password.
+      if [[ -n "${EXTERNAL_SERVER_URL}" ]]; then
+        grep --silent "rundeck\.tokens\.file" /etc/rundeck/framework.properties || \
+          echo "rundeck.tokens.file=/etc/rundeck/tokens.properties" >> /etc/rundeck/framework.properties
+        mytoken=$(printf '%s' "${RUNDECK_ADMIN_PASSWORD}" | md5sum | cut -d ' ' -f 1)
+        [[ -e /etc/rundeck/tokens.properties ]] \
+          && grep --silent "^admin:" /etc/rundeck/tokens.properties \
+          && sed -i -e "s,^admin:.*,admin: ${mytoken},g" /etc/rundeck/tokens.properties \
+          || echo "admin: ${mytoken}" >> /etc/rundeck/tokens.properties
+        chown rundeck:rundeck /etc/rundeck/tokens.properties
+      fi
    fi
 
    if [ "${RUNDECK_STORAGE_PROVIDER}" == "db" ]; then
