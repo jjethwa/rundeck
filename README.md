@@ -67,6 +67,8 @@ NO_LOCAL_MYSQL - false (default).  Set to true if using an external MySQL contai
 /var/lib/mysql
 /var/log/rundeck
 /opt/rundeck-plugins - For adding external plugins
+/var/lib/rundeck/logs
+/var/lib/rundeck/var/storage
 ```
 
 # Using an SSL Terminated Proxy
