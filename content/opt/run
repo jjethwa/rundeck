@@ -27,6 +27,12 @@ if [ ! -f "${initfile}" ]; then
    SERVER_HOSTNAME=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $1}')
    SERVER_PROTO=$(echo ${SERVER_URL} | awk -F/ '{print $1}' | awk -F: '{print $1}')
    SERVER_PORT=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $2}')
+   DATABASE_NAME=${DATABASE_NAME:-"rundeckdb"}
+   DATABASE_USER=${DATABASE_USER:-"rundeck"}
+   DATABASE_PASSWORD=${DATABASE_PASSWORD:-$(pwgen -s 15 1)}
+   DATABASE_HOST=${DATABASE_HOST:-"localhost"}
+   DATABASE_PORT=${DATABASE_PORT:-"3306"}
+
    if [ -z ${SERVER_PORT} ]; then
       # No port in SERVER_URL so assume 443 for HTTPS or 80 otherwise
       if [ ${SERVER_PROTO} == "https" ]; then
@@ -35,8 +41,8 @@ if [ ! -f "${initfile}" ]; then
          SERVER_PORT=80
       fi
    fi
-   DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
-   RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
+
+   DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://${DATABASE_HOST}/${DATABASE_NAME}?autoReconnect=true"}
    DEBIAN_SYS_MAINT_PASSWORD=${DEBIAN_SYS_MAINT_PASSWORD:-$(pwgen -s 15 1)}
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
@@ -93,8 +99,8 @@ update_user_password () {
      sed -i 's,password\ \=\ .*,password\ \=\ '${DEBIAN_SYS_MAINT_PASSWORD}',g' /etc/mysql/debian.cnf
 
      (
-     echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
-     echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+     echo "CREATE DATABASE IF NOT EXISTS ${DATABASE_NAME};"
+     echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON ${DATABASE_NAME}.* TO '${DATABASE_USER}'@'localhost' IDENTIFIED BY '${DATABASE_PASSWORD}';"
      echo "quit"
      ) |
      mysql
@@ -112,12 +118,12 @@ update_user_password () {
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
       : 
    else
-      echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
+      echo "dataSource.username = ${DATABASE_USER}" >> /etc/rundeck/rundeck-config.properties
    fi
    if grep -q dataSource.password /etc/rundeck/rundeck-config.properties ; then
-      sed -i 's,dataSource.password = .*,dataSource.password = '${RUNDECK_PASSWORD}',g' /etc/rundeck/rundeck-config.properties
+      sed -i 's,dataSource.password = .*,dataSource.password = '${DATABASE_PASSWORD}',g' /etc/rundeck/rundeck-config.properties
    else
-      echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+      echo "dataSource.password = ${DATABASE_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
    fi
 
    # framework.properties
@@ -177,7 +183,7 @@ if [ "${NO_LOCAL_MYSQL}" == "true" ]; then
 else
    echo "MySQL user 'root' has no password but only allows local connections"
 fi
-echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
+echo "MySQL user '${DATABASE_USER}' password set to ${DATABASE_PASSWORD}"
 echo "Rundeck project storage type set to ${RUNDECK_PROJECT_STORAGE_TYPE}"
 echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
 echo "Rundeck public key:"
