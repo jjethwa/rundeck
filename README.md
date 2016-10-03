@@ -44,6 +44,7 @@ To add (external) plugins, add the jars to the /opt/rundeck-plugins volume and t
 | **DATABASE_PASSWORD** | MySQL user password | Random: `$(pwgen -s 15 1)` |
 | **DATABASE_HOST** | MySQL server hostname | `localhost` |
 | **DATABASE_PORT** | MySQL server port | `3306` |
+| **DATABASE_CHECK_TIMEOUT** | Timeout in seconds to wait until MySQL server is available. Specially handy when you are running DB in another container and it needs some time to start and be available for connections. This is only used when **NO_LOCAL_MYSQL** is `True` | `120` |
 | **DATABASE_URL** | For use with (container) external database | `jdbc:mysql://${DATABASE_HOST}/${DATABASE_NAME}?autoReconnect=true` |
 | **RUNDECK_STORAGE_PROVIDER** | Options `file` or `db`. For more info check the [docs](http://rundeck.org/docs/plugins-user-guide/configuring.html#storage-plugins). | `file` |
 | **RUNDECK_PROJECT_STORAGE_TYPE** | Options `file` or `db`. For more info check the [docs](http://rundeck.org/docs/administration/setting-up-an-rdb-datasource.html). | `file` |
