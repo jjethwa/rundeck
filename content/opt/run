@@ -32,6 +32,7 @@ if [ ! -f "${initfile}" ]; then
    DATABASE_PASSWORD=${DATABASE_PASSWORD:-$(pwgen -s 15 1)}
    DATABASE_HOST=${DATABASE_HOST:-"localhost"}
    DATABASE_PORT=${DATABASE_PORT:-"3306"}
+   DATABASE_CHECK_TIMEOUT=${DATABASE_CHECK_TIMEOUT:-120}
 
    if [ -z ${SERVER_PORT} ]; then
       # No port in SERVER_URL so assume 443 for HTTPS or 80 otherwise
@@ -180,6 +181,7 @@ echo -e "\n\n\n"
 echo "==================================================================="
 if [ "${NO_LOCAL_MYSQL}" == "true" ]; then
    echo "NO_LOCAL_MYSQL set to true so local MySQL has not been configured or started"
+   /usr/local/bin/wait-for-it.sh -t ${DATABASE_CHECK_TIMEOUT} ${DATABASE_HOST}:${DATABASE_PORT} --strict -- echo "Connection to database on ${DATABASE_HOST}:${DATABASE_PORT} is up"
 else
    echo "MySQL user 'root' has no password but only allows local connections"
 fi
