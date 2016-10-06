@@ -23,8 +23,6 @@ RUN curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-
   && dpkg -i /tmp/rundeck*.deb \
   && rm /tmp/rundeck*.deb
 
-RUN curl -Lo /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && chmod +x /usr/local/bin/wait-for-it.sh
-
 RUN chown rundeck:rundeck /tmp/rundeck
 RUN chmod u+x /opt/run
 RUN mkdir -p /var/lib/rundeck/.ssh
