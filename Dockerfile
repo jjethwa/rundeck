@@ -33,7 +33,6 @@ RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/so
     shasum -a256 -c /tmp/rundeck-slack-plugin.sig && \
     cd - && \
     apt-get clean && \
-    apt-get autoremove -y curl git && \
     rm -rf /var/lib/apt/lists/*
 
 ADD content/ /
