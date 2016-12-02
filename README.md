@@ -73,3 +73,6 @@ NO_LOCAL_MYSQL - false (default).  Set to true if using an external MySQL contai
 
 # Using an SSL Terminated Proxy
 See: http://rundeck.org/docs/administration/configuring-ssl.html#using-an-ssl-terminated-proxy
+
+# Upgrading
+See: http://rundeck.org/docs/upgrading/index.html
