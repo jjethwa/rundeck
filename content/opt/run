@@ -128,9 +128,6 @@ update_user_password () {
 
    # if the admin pwd is still the default password and RUNDECK_ADMIN_PASSWORD is defined
    if $(grep --silent '^admin:admin,' /etc/rundeck/realm.properties) && [[ -n "${RUNDECK_ADMIN_PASSWORD}" ]]; then
-      sed -i \
-         's,framework.server.password\ \=.*,framework.server.password\ \=\ '${RUNDECK_ADMIN_PASSWORD}',g' \
-         /etc/rundeck/framework.properties
       sed -i 's*^admin:admin,*admin:'${RUNDECK_ADMIN_PASSWORD}',*g' /etc/rundeck/realm.properties
       # If EXTERNAL_SERVER_URL is being used, the inside/outside ports for rundeck confuse the standard
       # CLI tools like rd-jobs, rd-project and they won't work.  You will need to use the new and improved
