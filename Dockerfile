@@ -9,7 +9,8 @@ ENV DEBIAN_FRONTEND noninteractive \
     SERVER_URL https://localhost:4443 \
     RUNDECK_STORAGE_PROVIDER file \
     RUNDECK_PROJECT_STORAGE_TYPE file \
-    NO_LOCAL_MYSQL false
+    NO_LOCAL_MYSQL false \
+    RUNDECK_WITH_SSL true
 
 RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \
