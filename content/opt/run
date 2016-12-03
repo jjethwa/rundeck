@@ -67,6 +67,7 @@ update_user_password () {
 
    if [ ! -f /etc/rundeck/ssl/truststore ]; then
        echo "=>Generating ssl cert"
+       sudo -u rundeck mkdir -p /etc/rundeck/ssl
        sudo -u rundeck keytool -keystore /etc/rundeck/ssl/keystore -alias rundeck -genkey -keyalg RSA -keypass adminadmin -storepass adminadmin -dname "cn=localhost, o=OME, c=DE" && \
        cp /etc/rundeck/ssl/keystore /etc/rundeck/ssl/truststore
    fi
