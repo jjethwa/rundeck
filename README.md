@@ -24,7 +24,13 @@ docker pull jordan/rundeck
 Start a new container and bind to host's port 4440
 
 ```
-sudo docker run -p 4440:4440 -e SERVER_URL=http://MY.HOSTNAME.COM:4440 -t jordan/rundeck:latest
+sudo docker run -p 4440:4440 -e SERVER_URL=http://MY.HOSTNAME.COM:4440 --name rundeck -t jordan/rundeck:latest
+```
+
+# SSL
+Start a new container, bind to host's port 4443, and enable SSL.   Note: Make sure to update /etc/rundeck/ssl/keystore and /etc/rundeck/ssl/truststore for Production systems as the default certificate is self-signed.
+```
+sudo docker run -p 4443:4443 -e SERVER_URL=https://MY.HOSTNAME.COM:4443 -e RUNDECK_WITH_SSL=true --name rundeck -t jordan/rundeck:latest
 ```
 
 # Rundeck plugins
@@ -44,6 +50,8 @@ DATABASE_URL - For use with (container) external database
 RUNDECK_UID - The unix user ID to be used for the rundeck account when rundeck is booted.  This is useful for embedding this docker container into your development environment sharing files via docker volumes between the container and your host OS.  RUNDECK_GID also needs to be defined for this overload to take place.
 
 RUNDECK_GID - The unix group ID to be used for the rundeck account when rundeck is booted.  This is useful for embedding this docker container into your development environment sharing files via docker volumes between the container and your host OS.  RUNDECK_UID also needs to be defined for this overload to take place.
+
+RUNDECK_WITH_SSL - Enable SSL
 
 RUNDECK_PASSWORD - MySQL 'rundeck' user password
 
