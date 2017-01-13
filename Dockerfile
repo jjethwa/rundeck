@@ -18,8 +18,8 @@ RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/so
     curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.7.1-1-GA.deb && \
     echo '57986749f7496cf201cb89ebd44fe0859d86062f0783d9e653344d4894ba0559  rundeck.deb' > /tmp/rundeck.sig && \
     shasum -a256 -c /tmp/rundeck.sig && \
-    curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v1.0.0-alpha/rundeck-cli_1.0.0.SNAPSHOT-1_all.deb && \
-    echo '890ae85e0acdf703fa336bfc73a7129ce618794833d5744ddae901a1b2e38074  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
+    curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v1.0.4/rundeck-cli_1.0.4-1_all.deb && \
+    echo 'becf5704bda6cdc7055ee7898cae7b5d93bc954b1105815bacb69f1e9069f682  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
     shasum -a256 -c /tmp/rundeck-cli.sig && \
     cd - && \
     dpkg -i /tmp/rundeck*.deb && rm /tmp/rundeck*.deb && \
