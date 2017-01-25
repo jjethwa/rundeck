@@ -20,6 +20,11 @@ chown -R rundeck:adm /var/log/rundeck
 chown -R rundeck:rundeck /var/lib/rundeck
 chown -R rundeck:rundeck /opt/rundeck-defaults
 
+# Plugins
+echo "=>Installing plugins from /opt/rundeck-plugins"
+if ls /opt/rundeck-plugins/* 1> /dev/null 2>&1; then
+   cp -Rf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
+fi
 
 if [ ! -f "${initfile}" ]; then
    SERVER_URL=${SERVER_URL:-"https://0.0.0.0:4443"}
@@ -172,11 +177,6 @@ update_user_password () {
 
    touch ${initfile}
 fi
-
-# Plugins
-echo "=>Checking for plugins from /opt/rundeck-plugins"
-#mv -vf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
-cp -Rvf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
 
 echo "Starting Supervisor.  You can safely CTRL-C and the container will continue to run with or without the -d (daemon) option"
 /usr/bin/supervisord -c /etc/supervisor/conf.d/rundeck.conf >> /dev/null
