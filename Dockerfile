@@ -13,7 +13,7 @@ ENV DEBIAN_FRONTEND noninteractive \
 
 RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \
-    apt-get -qqy install --no-install-recommends bash openjdk-8-jre-headless supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git rsync && \
+    apt-get -qqy install --no-install-recommends bash openjdk-8-jre-headless supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git && \
     cd /tmp/ && \
     curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.7.1-1-GA.deb && \
     echo '57986749f7496cf201cb89ebd44fe0859d86062f0783d9e653344d4894ba0559  rundeck.deb' > /tmp/rundeck.sig && \
