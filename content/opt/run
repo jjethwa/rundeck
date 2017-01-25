@@ -175,7 +175,8 @@ fi
 
 # Plugins
 echo "=>Checking for plugins from /opt/rundeck-plugins"
-mv -vf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
+#mv -vf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
+cp -Rvf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
 
 echo "Starting Supervisor.  You can safely CTRL-C and the container will continue to run with or without the -d (daemon) option"
 /usr/bin/supervisord -c /etc/supervisor/conf.d/rundeck.conf >> /dev/null
