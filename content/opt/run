@@ -41,7 +41,7 @@ if [ ! -f "${initfile}" ]; then
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
    NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
-   
+
 update_user_password () {
    (
    echo "UPDATE mysql.user SET password=PASSWORD('${2}') WHERE user='${1}';"
@@ -56,7 +56,7 @@ update_user_password () {
        echo "=>Generating rundeck key"
        sudo -u rundeck ssh-keygen -t rsa -b 4096 -f /var/lib/rundeck/.ssh/id_rsa -N ''
    fi
-   
+
    if [ "$(ls -A /etc/rundeck)" ]; then
        echo "=>/etc/rundeck check OK"
    else
@@ -88,7 +88,7 @@ update_user_password () {
          ) |
          mysql
      fi
-   
+
      # Set debian-sys-maint password
      update_user_password debian-sys-maint ${DEBIAN_SYS_MAINT_PASSWORD}
      sed -i 's,password\ \=\ .*,password\ \=\ '${DEBIAN_SYS_MAINT_PASSWORD}',g' /etc/mysql/debian.cnf
@@ -111,7 +111,7 @@ update_user_password () {
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
-      : 
+      :
    else
       echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
    fi
@@ -154,37 +154,29 @@ update_user_password () {
    if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
       echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
    fi
-   # Plugins
-   if ls /opt/rundeck-plugins/*.jar 1> /dev/null 2>&1; then
-      echo "=>Installing plugins from /opt/rundeck-plugins"
-      cp /opt/rundeck-plugins/*.jar /var/lib/rundeck/libext 2>/dev/null
-   fi
-   if ls /opt/rundeck-plugins/*.zip 1> /dev/null 2>&1; then
-      echo "=>Installing plugins from /opt/rundeck-plugins"
-      cp /opt/rundeck-plugins/*.zip /var/lib/rundeck/libext 2>/dev/null
-   fi
-   if ls /opt/rundeck-plugins/*.groovy 1> /dev/null 2>&1; then
-      echo "=>Installing plugins from /opt/rundeck-plugins"
-      cp /opt/rundeck-plugins/*.groovy /var/lib/rundeck/libext 2>/dev/null
-   fi
 
-echo -e "\n\n\n"
-echo "==================================================================="
-if [ "${NO_LOCAL_MYSQL}" == "true" ]; then
-   echo "NO_LOCAL_MYSQL set to true so local MySQL has not been configured or started"
-else
-   echo "MySQL user 'root' has no password but only allows local connections"
-fi
-echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
-echo "Rundeck project storage type set to ${RUNDECK_PROJECT_STORAGE_TYPE}"
-echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
-echo "Rundeck public key:"
-cat /var/lib/rundeck/.ssh/id_rsa.pub
-echo "Server URL set to ${SERVER_URL}"
-echo "==================================================================="
+   echo -e "\n\n\n"
+   echo "==================================================================="
+   if [ "${NO_LOCAL_MYSQL}" == "true" ]; then
+      echo "NO_LOCAL_MYSQL set to true so local MySQL has not been configured or started"
+   else
+      echo "MySQL user 'root' has no password but only allows local connections"
+   fi
+   echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
+   echo "Rundeck project storage type set to ${RUNDECK_PROJECT_STORAGE_TYPE}"
+   echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
+   echo "Rundeck public key:"
+   cat /var/lib/rundeck/.ssh/id_rsa.pub
+   echo "Server URL set to ${SERVER_URL}"
+   echo "==================================================================="
 
-touch ${initfile}
+   touch ${initfile}
 fi
+
+# Plugins
+echo "=>Checking for plugins from /opt/rundeck-plugins"
+#mv -vf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
+cp -Rvf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
 
 echo "Starting Supervisor.  You can safely CTRL-C and the container will continue to run with or without the -d (daemon) option"
 /usr/bin/supervisord -c /etc/supervisor/conf.d/rundeck.conf >> /dev/null
