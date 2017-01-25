@@ -47,14 +47,14 @@ if [ ! -f "${initfile}" ]; then
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
    NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
 
-update_user_password () {
-   (
-   echo "UPDATE mysql.user SET password=PASSWORD('${2}') WHERE user='${1}';"
-   echo "FLUSH PRIVILEGES;"
-   echo "quit"
-   ) |
-   mysql
-}
+   update_user_password () {
+      (
+      echo "UPDATE mysql.user SET password=PASSWORD('${2}') WHERE user='${1}';"
+      echo "FLUSH PRIVILEGES;"
+      echo "quit"
+      ) |
+      mysql
+   }
 
    echo "=>Initializing rundeck - This may take a few minutes"
    if [ ! -f /var/lib/rundeck/.ssh/id_rsa ]; then

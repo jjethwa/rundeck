@@ -9,7 +9,7 @@ This repository contains the source for the [Rundeck](http://rundeck.org/) [dock
 1. Supervisor, Apache2, and rundeck
 1. No SSH.  Use docker exec or [nsenter](https://github.com/jpetazzo/nsenter)
 1. If RUNDECK_PASSWORD is not supplied, it will be randomly generated and shown via stdout.
-1. Supply the SERVER_URL or else you won't get too far :)
+1. Supply the SERVER_URL or it will default to https://0.0.0.0:4443
 1. As always, update passwords for pre-installed accounts
 1. I sometimes get connection reset by peer errors when building the Docker image from the Rundeck download URL.  Trying again usually works.
 
