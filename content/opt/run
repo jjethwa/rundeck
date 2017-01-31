@@ -24,6 +24,7 @@ chown -R rundeck:rundeck /opt/rundeck-defaults
 if ls /opt/rundeck-plugins/* 1> /dev/null 2>&1; then
    echo "=>Installing plugins from /opt/rundeck-plugins"
    cp -Rf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
+   chown -R rundeck:rundeck /var/lib/rundeck/libext
 fi
 
 if [ ! -f "${initfile}" ]; then
