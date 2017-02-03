@@ -15,11 +15,11 @@ RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/so
     apt-get -qq update && \
     apt-get -qqy install --no-install-recommends bash openjdk-8-jre-headless supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git && \
     cd /tmp/ && \
-    curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.7.1-1-GA.deb && \
-    echo '57986749f7496cf201cb89ebd44fe0859d86062f0783d9e653344d4894ba0559  rundeck.deb' > /tmp/rundeck.sig && \
+    curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.7.2-1-GA.deb && \
+    echo 'fdac2afb029c5c49c32525a2509550267d4c0770c224018a9138dd2e9482fc74  rundeck.deb' > /tmp/rundeck.sig && \
     shasum -a256 -c /tmp/rundeck.sig && \
-    curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v1.0.5/rundeck-cli_1.0.5-1_all.deb && \
-    echo '5ca80483009b4c3ed665fa14f22322231ed9286de20d5475518cfd424e4b5017  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
+    curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v1.0.7/rundeck-cli_1.0.7-1_all.deb && \
+    echo 'f9cf3348559b2135283d50d96e387b8014ec1b570e3ff67f978720cb367ceb4f  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
     shasum -a256 -c /tmp/rundeck-cli.sig && \
     cd - && \
     dpkg -i /tmp/rundeck*.deb && rm /tmp/rundeck*.deb && \
