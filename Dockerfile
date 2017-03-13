@@ -15,8 +15,8 @@ RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/so
     apt-get -qq update && \
     apt-get -qqy install -t jessie-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git uuid-runtime && \
     cd /tmp/ && \
-    curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.7.2-1-GA.deb && \
-    echo 'fdac2afb029c5c49c32525a2509550267d4c0770c224018a9138dd2e9482fc74  rundeck.deb' > /tmp/rundeck.sig && \
+    curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.7.3-1-GA.deb && \
+    echo 'ee70fb57187d1fec136d20835bf64c11b4be4735480d48fab93a8ab5ed90013f  rundeck.deb' > /tmp/rundeck.sig && \
     shasum -a256 -c /tmp/rundeck.sig && \
     curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v1.0.7/rundeck-cli_1.0.7-1_all.deb && \
     echo 'f9cf3348559b2135283d50d96e387b8014ec1b570e3ff67f978720cb367ceb4f  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
