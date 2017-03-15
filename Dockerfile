@@ -15,9 +15,7 @@ ENV DEBIAN_FRONTEND noninteractive \
     KEYSTORE_PASS adminadmin \
     TRUSTSTORE_PASS adminadmin
 
-RUN groupadd -g 2001 rundeck && \
-    useradd -u 2001 -g 2001 rundeck && \
-    echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list && \
+RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \
     apt-get -qqy install -t jessie-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git uuid-runtime && \
     cd /tmp/ && \
