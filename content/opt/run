@@ -6,12 +6,6 @@ initfile=/etc/rundeck.init
 
 chmod 1777 /tmp
 
-if [[ -n "${RUNDECK_GID}" && -n "${RUNDECK_UID}" ]]; then
-  echo "Setting rundeck account to ${RUNDECK_UID}:${RUNDECK_GID}"
-  groupmod -o -g ${RUNDECK_GID} rundeck
-  usermod -o -u ${RUNDECK_UID} -g ${RUNDECK_GID} rundeck
-fi
-
 # chown directories and files that might be coming from volumes
 chown -R mysql:mysql /var/lib/mysql
 chown -R rundeck:rundeck /etc/rundeck
@@ -47,6 +41,10 @@ if [ ! -f "${initfile}" ]; then
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
    NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
+   LOGIN_MODULE=${LOGIN_MODULE:-"RDpropertyfilelogin"}
+   JASS_CONF_FILE=${JASS_CONF_FILE:-"jass-loginmodule.conf"}
+   KEYSTORE_PASS=${KEYSTORE_PASS:-"adminadmin"}
+   TRUSTSTORE_PASS=${TRUSTSTORE_PASS:-"adminadmin"}
 
    update_user_password () {
       (
@@ -115,7 +113,7 @@ if [ ! -f "${initfile}" ]; then
 
    sed -i 's,grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_URL}',g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
-   sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
+   sed -i 's,dataSource.url = .*,dataSource.url = jdbc:mysql://'${DATABASE_URL}'/rundeck?autoReconnect=true,g' /etc/rundeck/rundeck-config.properties
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
       :
    else
@@ -160,6 +158,12 @@ if [ ! -f "${initfile}" ]; then
    if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
       echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
    fi
+
+   sed -i 's,JAAS_CONF\=.*,JAAS_CONF\="/etc/rundeck/'${JASS_CONF_FILE}'",' /etc/rundeck/profile
+   sed -i 's,LOGIN_MODULE\=.*,LOGIN_MODULE\="'${LOGIN_MODULE}'",' /etc/rundeck/profile
+   sed -i 's,keystore\.password\=.*,keystore\.password\='${KEYSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
+   sed -i 's,key\.password\=.*,key\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
+   sed -i 's,truststore\.password\=.*,truststore\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
 
    echo -e "\n\n\n"
    echo "==================================================================="

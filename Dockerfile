@@ -9,9 +9,15 @@ ENV DEBIAN_FRONTEND noninteractive \
     SERVER_URL https://localhost:4443 \
     RUNDECK_STORAGE_PROVIDER file \
     RUNDECK_PROJECT_STORAGE_TYPE file \
-    NO_LOCAL_MYSQL false
+    NO_LOCAL_MYSQL false \
+    LOGIN_MODULE RDpropertyfilelogin \
+    JASS_CONF_FILE jass-loginmodule.conf \
+    KEYSTORE_PASS adminadmin \
+    TRUSTSTORE_PASS adminadmin
 
-RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list && \
+RUN groupadd -g 2001 rundeck && \
+    useradd -u 2001 -g 2001 rundeck && \
+    echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \
     apt-get -qqy install -t jessie-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git uuid-runtime && \
     cd /tmp/ && \
