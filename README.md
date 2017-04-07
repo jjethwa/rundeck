@@ -65,9 +65,9 @@ DEBIAN_SYS_MAINT_PASSWORD
 
 NO_LOCAL_MYSQL - false (default).  Set to true if using an external MySQL container or instance.  Make sure to set DATABASE_URL and RUNDECK_PASSWORD (used for JDBC connection to MySQL).  Further details for setting up MYSQL: http://rundeck.org/docs/administration/setting-up-an-rdb-datasource.html
 
-LOGIN_MODULE - RDpropertyfilelogin(default) or ldap
+LOGIN_MODULE - RDpropertyfilelogin(default) or ldap. See: http://rundeck.org/docs/administration/authenticating-users.html
 
-JAAS_CONF_FILE - ldap configuration file name if ldap. You will need to mount the same file at /etc/rundeck/<filename of ldap>
+JAAS_CONF_FILE - ldap configuration file name if ldap. You will need to mount the same file at /etc/rundeck/<filename of ldap>. See: http://rundeck.org/docs/administration/authenticating-users.html
 ```
 
 # Volumes
