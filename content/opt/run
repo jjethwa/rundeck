@@ -19,6 +19,8 @@ chown -R rundeck:rundeck /var/rundeck
 chown -R rundeck:adm /var/log/rundeck
 chown -R rundeck:rundeck /var/lib/rundeck
 chown -R rundeck:rundeck /opt/rundeck-defaults
+chown -R rundeck:rundeck /tmp/rundeck
+chmod -R 750 /tmp/rundeck
 
 # Plugins
 if ls /opt/rundeck-plugins/* 1> /dev/null 2>&1; then
@@ -47,6 +49,10 @@ if [ ! -f "${initfile}" ]; then
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
    NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
+   LOGIN_MODULE=${LOGIN_MODULE:-"RDpropertyfilelogin"}
+   JAAS_CONF_FILE=${JAAS_CONF_FILE:-"jaas-loginmodule.conf"}
+   KEYSTORE_PASS=${KEYSTORE_PASS:-"adminadmin"}
+   TRUSTSTORE_PASS=${TRUSTSTORE_PASS:-"adminadmin"}
 
    update_user_password () {
       (
@@ -160,6 +166,12 @@ if [ ! -f "${initfile}" ]; then
    if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
       echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
    fi
+
+   sed -i 's,JAAS_CONF\=.*,JAAS_CONF\="/etc/rundeck/'${JAAS_CONF_FILE}'",' /etc/rundeck/profile
+   sed -i 's,LOGIN_MODULE\=.*,LOGIN_MODULE\="'${LOGIN_MODULE}'",' /etc/rundeck/profile
+   sed -i 's,keystore\.password\=.*,keystore\.password\='${KEYSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
+   sed -i 's,key\.password\=.*,key\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
+   sed -i 's,truststore\.password\=.*,truststore\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
 
    echo -e "\n\n\n"
    echo "==================================================================="
