@@ -123,7 +123,7 @@ if [ ! -f "${initfile}" ]; then
 
    sed -i 's,grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_URL}',g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
-   sed -i 's,dataSource.url = .*,dataSource.url = jdbc:mysql://'${DATABASE_URL}'/rundeck?autoReconnect=true,g' /etc/rundeck/rundeck-config.properties
+   sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
       :
    else
