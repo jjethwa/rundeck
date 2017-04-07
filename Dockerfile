@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND noninteractive \
     RUNDECK_PROJECT_STORAGE_TYPE file \
     NO_LOCAL_MYSQL false \
     LOGIN_MODULE RDpropertyfilelogin \
-    JASS_CONF_FILE jass-loginmodule.conf \
+    JAAS_CONF_FILE jaas-loginmodule.conf \
     KEYSTORE_PASS adminadmin \
     TRUSTSTORE_PASS adminadmin
 

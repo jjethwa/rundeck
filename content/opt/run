@@ -52,7 +52,7 @@ if [ ! -f "${initfile}" ]; then
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
    NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
    LOGIN_MODULE=${LOGIN_MODULE:-"RDpropertyfilelogin"}
-   JASS_CONF_FILE=${JASS_CONF_FILE:-"jass-loginmodule.conf"}
+   JAAS_CONF_FILE=${JAAS_CONF_FILE:-"jaas-loginmodule.conf"}
    KEYSTORE_PASS=${KEYSTORE_PASS:-"adminadmin"}
    TRUSTSTORE_PASS=${TRUSTSTORE_PASS:-"adminadmin"}
 
@@ -169,7 +169,7 @@ if [ ! -f "${initfile}" ]; then
       echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
    fi
 
-   sed -i 's,JAAS_CONF\=.*,JAAS_CONF\="/etc/rundeck/'${JASS_CONF_FILE}'",' /etc/rundeck/profile
+   sed -i 's,JAAS_CONF\=.*,JAAS_CONF\="/etc/rundeck/'${JAAS_CONF_FILE}'",' /etc/rundeck/profile
    sed -i 's,LOGIN_MODULE\=.*,LOGIN_MODULE\="'${LOGIN_MODULE}'",' /etc/rundeck/profile
    sed -i 's,keystore\.password\=.*,keystore\.password\='${KEYSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
    sed -i 's,key\.password\=.*,key\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties

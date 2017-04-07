@@ -67,7 +67,7 @@ NO_LOCAL_MYSQL - false (default).  Set to true if using an external MySQL contai
 
 LOGIN_MODULE - RDpropertyfilelogin(default) or ldap
 
-JASS_CONF_FILE - ldap configuration file name if ldap. You will need to mount the same file at /etc/rundeck/<filename of ldap>
+JAAS_CONF_FILE - ldap configuration file name if ldap. You will need to mount the same file at /etc/rundeck/<filename of ldap>
 ```
 
 # Volumes
