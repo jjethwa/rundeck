@@ -43,7 +43,7 @@ SERVER_URL - Full URL in the form http://MY.HOSTNAME.COM:4440, http//123.456.789
 
 EXTERNAL_SERVER_URL - Use this if you are running rundeck behind a proxy.  This is useful if you run rundeck through some kind of external network gateway/load balancer.  Note that utilities like rd-jobs and rd-projects will no longer work and you will need to use the newer [rd](https://github.com/rundeck/rundeck-cli) command line utility.
 
-RDECK_JVM - Additional parameters sent to the rundeck JVM (ex: -Dserver.web.context=/rundeck)
+RDECK_JVM_SETTINGS - Additional parameters sent to the rundeck JVM (ex: -Xmx1024m -Xms256m -XX:MaxMetaspaceSize=256m -server -Dfile.encoding=UTF-8 -Dserver.web.context=/rundeck)
 
 DATABASE_URL - For use with (container) external database
 
