@@ -124,7 +124,7 @@ if [ ! -f "${initfile}" ]; then
          echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
          echo "quit"
          ) |
-         mysql --host=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)") --user=rundek --password=${RUNDECK_PASSWORD}
+         mysql --host=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)") --user=rundeck --password=${RUNDECK_PASSWORD}
       else
         echo "=>Remote database is not MySQL. Skipping remote setup"
       fi
