@@ -117,6 +117,17 @@ if [ ! -f "${initfile}" ]; then
      cat /opt/mysql.conf >> /etc/supervisor/conf.d/rundeck.conf
    else
       echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
+      if [[ ${DATABASE_URL} == *"mysql"* ]]; then
+        echo "=>Initializing remote MySQL"
+        (
+         echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
+         echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+         echo "quit"
+         ) |
+         mysql --host=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)") --user=rundek --password=${RUNDECK_PASSWORD}
+      else
+        echo "=>Remote database is not MySQL. Skipping remote setup"
+      fi
    fi
 
    sed -i 's,grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_URL}',g' /etc/rundeck/rundeck-config.properties
