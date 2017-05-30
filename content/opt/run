@@ -118,7 +118,7 @@ if [ ! -f "${initfile}" ]; then
    else
       echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
       if [[ ${DATABASE_URL} == *"mysql"* ]]; then
-        echo "=>Initializing remote MySQL"
+        echo "=>Initializing remote MySQL setup"
         (
          echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
          echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
