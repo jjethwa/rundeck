@@ -1,12 +1,11 @@
 # Dockerfile for rundeck
 # https://github.com/jjethwa/rundeck
 
-FROM debian:jessie
+FROM debian:stretch
 
 MAINTAINER Jordan Jethwa
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    SERVER_URL=https://localhost:4443 \
+ENV SERVER_URL=https://localhost:4443 \
     RUNDECK_STORAGE_PROVIDER=file \
     RUNDECK_PROJECT_STORAGE_TYPE=file \
     NO_LOCAL_MYSQL=false \
@@ -15,9 +14,10 @@ ENV DEBIAN_FRONTEND=noninteractive \
     KEYSTORE_PASS=adminadmin \
     TRUSTSTORE_PASS=adminadmin
 
-RUN echo "deb http://ftp.debian.org/debian jessie-backports main" >> /etc/apt/sources.list && \
+RUN export DEBIAN_FRONTEND=noninteractive \
+    echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \
-    apt-get -qqy install -t jessie-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git uuid-runtime parallel && \
+    apt-get -qqy install -t stretch-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git uuid-runtime parallel && \
     cd /tmp/ && \
     curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck-2.8.2-1-GA.deb && \
     echo '739ee8230a5da973c95a540391d021bc48f2cf77a17f68b7310ca4ff7aac9b17  rundeck.deb' > /tmp/rundeck.sig && \
