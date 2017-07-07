@@ -145,7 +145,16 @@ if [ ! -f "${initfile}" ]; then
    else
       echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
    fi
-
+   
+   # Check if we need to set the rundeck.gui.brand.html property
+   if [ -n "${GUI_BRAND_HTML}" ]; then
+      if grep -q rundeck.gui.brand.html /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/rundeck\.gui\.brand\.html.*$/rundeck\.gui\.brand\.html = '${GUI_BRAND_HTML}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "rundeck.gui.brand.html = ${GUI_BRAND_HTML}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
+   
    # framework.properties
    sed -i 's,framework.server.name\ \=.*,framework.server.name\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
    sed -i 's,framework.server.hostname\ \=.*,framework.server.hostname\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
