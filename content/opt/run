@@ -47,7 +47,6 @@ if [ ! -f "${initfile}" ]; then
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
    DATABASE_ADMIN_USER=${DATABASE_ADMIN_USER:-rundeck}
-   DEBIAN_SYS_MAINT_PASSWORD=${DEBIAN_SYS_MAINT_PASSWORD:-$(pwgen -s 15 1)}
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
    NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
@@ -93,19 +92,8 @@ if [ ! -f "${initfile}" ]; then
       else
          echo "=>MySQL datadir is empty...initializing"
          /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-         echo "=>Starting MySQL...ignore warning about debian-sys-maint user, it will be granted permissions momentarily"
          /etc/init.d/mysql start
-         sleep 5
-         (
-         echo "GRANT ALL PRIVILEGES ON *.* TO 'debian-sys-maint'@'localhost' IDENTIFIED BY '${DEBIAN_SYS_MAINT_PASSWORD}';"
-         echo "quit"
-         ) |
-         mysql
      fi
-
-     # Set debian-sys-maint password
-     update_user_password debian-sys-maint ${DEBIAN_SYS_MAINT_PASSWORD}
-     sed -i 's,password\ \=\ .*,password\ \=\ '${DEBIAN_SYS_MAINT_PASSWORD}',g' /etc/mysql/debian.cnf
 
      (
      echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
