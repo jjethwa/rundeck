@@ -81,8 +81,10 @@ if [ ! -f "${initfile}" ]; then
    if [ ! -f /etc/rundeck/ssl/truststore ]; then
        echo "=>Generating ssl cert"
        sudo -u rundeck mkdir -p /etc/rundeck/ssl
+       if [ ! -f /etc/rundeck/ssl/keystore ]; then
+           sudo -u rundeck keytool -importkeystore -destkeystore /etc/rundeck/ssl/keystore -srckeystore /etc/ssl/certs/java/cacerts -deststoretype JKS -srcstoretype JKS -deststorepass ${TRUSTSTORE_PASS} -srcstorepass changeit -noprompt > /dev/null
+       fi
        sudo -u rundeck keytool -keystore /etc/rundeck/ssl/keystore -alias rundeck -genkey -keyalg RSA -keypass ${KEYSTORE_PASS} -storepass ${TRUSTSTORE_PASS} -dname "cn=localhost, o=OME, c=DE"
-       sudo -u rundeck keytool -importkeystore -destkeystore /etc/rundeck/ssl/keystore -srckeystore /etc/ssl/certs/java/cacerts -deststoretype JKS -srcstoretype JKS -deststorepass ${TRUSTSTORE_PASS} -srcstorepass changeit -noprompt > /dev/null
        cp /etc/rundeck/ssl/keystore /etc/rundeck/ssl/truststore
    fi
 
