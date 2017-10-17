@@ -146,6 +146,51 @@ if [ ! -f "${initfile}" ]; then
       fi
    fi
    
+   # Check if we need to set the grails.mail.host property
+   if [ -n "${SMTP_HOST}" ]; then
+      if grep -q grails.mail.host /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.host.*$/grails\.mail\.host = '${SMTP_HOST}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.host = ${SMTP_HOST}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
+
+   # Check if we need to set the grails.mail.port property
+   if [ -n "${SMTP_PORT}" ]; then
+      if grep -q grails.mail.port /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.port.*$/grails\.mail\.port = '${SMTP_PORT}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.port = ${SMTP_PORT}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
+
+   # Check if we need to set the grails.mail.username property
+   if [ -n "${SMTP_USERNAME}" ]; then
+      if grep -q grails.mail.username /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.username.*$/grails\.mail\.username = '${SMTP_USERNAME}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.username = ${SMTP_USERNAME}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
+
+   # Check if we need to set the grails.mail.password property
+   if [ -n "${SMTP_PASSWORD}" ]; then
+      if grep -q grails.mail.password /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.password.*$/grails\.mail\.password = '${SMTP_PASSWORD}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.password = ${SMTP_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
+
+   # Check if we need to set the grails.mail.default.from property
+   if [ -n "${SMTP_DEFAULT_FROM}" ]; then
+      if grep -q grails.mail.default.from /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.default\.from.*$/grails\.mail\.default\.from = '${SMTP_DEFAULT_FROM}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.default.from = ${SMTP_DEFAULT_FROM}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi 
+   
    # framework.properties
    sed -i 's,framework.server.name\ \=.*,framework.server.name\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
    sed -i 's,framework.server.hostname\ \=.*,framework.server.hostname\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
