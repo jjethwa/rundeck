@@ -46,16 +46,16 @@ if [ ! -f "${initfile}" ]; then
 
    # Docker secrets support
    if [ -f /run/secrets/RUNDECK_PASSWORD ]; then
-      RUNDECK_PASSWORD = $(< /run/secrets/RUNDECK_PASSWORD)
+      RUNDECK_PASSWORD=$(< /run/secrets/RUNDECK_PASSWORD)
    fi
    if [ -f /run/secrets/DATABASE_ADMIN_PASSWORD ]; then
-      DATABASE_ADMIN_PASSWORD = $(< /run/secrets/DATABASE_ADMIN_PASSWORD)
+      DATABASE_ADMIN_PASSWORD=$(< /run/secrets/DATABASE_ADMIN_PASSWORD)
    fi
    if [ -f /run/secrets/KEYSTORE_PASS ]; then
-      KEYSTORE_PASS = $(< /run/secrets/KEYSTORE_PASS)
+      KEYSTORE_PASS=$(< /run/secrets/KEYSTORE_PASS)
    fi
    if [ -f /run/secrets/TRUSTSTORE_PASS ]; then
-      TRUSTSTORE_PASS = $(< /run/secrets/TRUSTSTORE_PASS)
+      TRUSTSTORE_PASS=$(< /run/secrets/TRUSTSTORE_PASS)
    fi
 
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
@@ -65,6 +65,7 @@ if [ ! -f "${initfile}" ]; then
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
    RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
    NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
+   SKIP_DATABASE_SETUP=${SKIP_DATABASE_SETUP:-"false"}
    LOGIN_MODULE=${LOGIN_MODULE:-"RDpropertyfilelogin"}
    JAAS_CONF_FILE=${JAAS_CONF_FILE:-"jaas-loginmodule.conf"}
    KEYSTORE_PASS=${KEYSTORE_PASS:-"adminadmin"}
@@ -125,7 +126,7 @@ if [ ! -f "${initfile}" ]; then
      cat /opt/mysql.conf >> /etc/supervisor/conf.d/rundeck.conf
    else
       echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
-      if [[ ${DATABASE_URL} == *"mysql"* ]]; then
+      if [[ "${DATABASE_URL}" == *"mysql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
         echo "=>Initializing remote MySQL setup"
         (
          echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
@@ -134,7 +135,7 @@ if [ ! -f "${initfile}" ]; then
          ) |
          mysql --host=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)") --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
       else
-        echo "=>Remote database is not MySQL. Skipping remote setup"
+        echo "=>Skipping remote database setup"
       fi
    fi
 
