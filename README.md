@@ -84,6 +84,8 @@ NO_LOCAL_MYSQL - false (default).  Set to true if using an external MySQL contai
 LOGIN_MODULE - RDpropertyfilelogin(default) or ldap. See: http://rundeck.org/docs/administration/authenticating-users.html
 
 JAAS_CONF_FILE - ldap configuration file name if ldap. You will need to mount the same file at /etc/rundeck/<filename of ldap>. See: http://rundeck.org/docs/administration/authenticating-users.html
+
+SKIP_DATABASE_SETUP - Set to true if database is already setup and/or database admin password is not known
 ```
 
 # Volumes
