@@ -43,6 +43,21 @@ if [ ! -f "${initfile}" ]; then
          SERVER_PORT=80
       fi
    fi
+
+   # Docker secrets support
+   if [ -f /run/secrets/RUNDECK_PASSWORD ]; then
+      RUNDECK_PASSWORD = $(< /run/secrets/RUNDECK_PASSWORD)
+   fi
+   if [ -f /run/secrets/DATABASE_ADMIN_PASSWORD ]; then
+      DATABASE_ADMIN_PASSWORD = $(< /run/secrets/DATABASE_ADMIN_PASSWORD)
+   fi
+   if [ -f /run/secrets/KEYSTORE_PASS ]; then
+      KEYSTORE_PASS = $(< /run/secrets/KEYSTORE_PASS)
+   fi
+   if [ -f /run/secrets/TRUSTSTORE_PASS ]; then
+      TRUSTSTORE_PASS = $(< /run/secrets/TRUSTSTORE_PASS)
+   fi
+
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
