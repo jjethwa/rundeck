@@ -101,6 +101,18 @@ SKIP_DATABASE_SETUP - Set to true if database is already setup and/or database a
 /var/lib/rundeck/var/storage
 ```
 
+# Working behind a web proxy
+If you are running Rundeck behind a web proxy, use the following:
+```
+sudo docker run -p 4440:4440 \
+  -e SERVER_URL=http://MY.HOSTNAME.COM:4440 \
+  -e HTTP_PROXY="http://WEBPROXY:PORT" \
+  -e HTTPS_PROXY="http://WEBPROXY:PORT" \
+  -e RDECK_JVM="-Djava.net.useSystemProxies=true" \
+  --name rundeck -t jordan/rundeck:latest
+```
+
+
 # Using an SSL Terminated Proxy
 See: http://rundeck.org/docs/administration/configuring-ssl.html#using-an-ssl-terminated-proxy
 
