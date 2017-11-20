@@ -24,24 +24,24 @@ chmod -R 750 /tmp/rundeck
 
 # Plugins
 if ls /opt/rundeck-plugins/* 1> /dev/null 2>&1; then
-  echo "=>Installing plugins from /opt/rundeck-plugins"
-  cp -Rf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
-  chown -R rundeck:rundeck /var/lib/rundeck/libext
+   echo "=>Installing plugins from /opt/rundeck-plugins"
+   cp -Rf /opt/rundeck-plugins/* /var/lib/rundeck/libext/
+   chown -R rundeck:rundeck /var/lib/rundeck/libext
 fi
 
 if [ ! -f "${initfile}" ]; then
-  SERVER_URL=${SERVER_URL:-"https://0.0.0.0:4443"}
-  SERVER_HOSTNAME=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $1}')
-  SERVER_PROTO=$(echo ${SERVER_URL} | awk -F/ '{print $1}' | awk -F: '{print $1}')
-  SERVER_PORT=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $2}')
-  if [ -z ${SERVER_PORT} ]; then
-    # No port in SERVER_URL so assume 443 for HTTPS or 80 otherwise
-    if [ ${SERVER_PROTO} == "https" ]; then
-        SERVER_PORT=443
-    else
+   SERVER_URL=${SERVER_URL:-"https://0.0.0.0:4443"}
+   SERVER_HOSTNAME=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $1}')
+   SERVER_PROTO=$(echo ${SERVER_URL} | awk -F/ '{print $1}' | awk -F: '{print $1}')
+   SERVER_PORT=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $2}')
+   if [ -z ${SERVER_PORT} ]; then
+      # No port in SERVER_URL so assume 443 for HTTPS or 80 otherwise
+      if [ ${SERVER_PROTO} == "https" ]; then
+         SERVER_PORT=443
+      else
         SERVER_PORT=80
-    fi
-  fi
+      fi
+   fi
 
   # Docker secrets support
   if [ -f /run/secrets/RUNDECK_PASSWORD ]; then
@@ -57,213 +57,213 @@ if [ ! -f "${initfile}" ]; then
     TRUSTSTORE_PASS=$(< /run/secrets/TRUSTSTORE_PASS)
   fi
 
-  DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
-  RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
-  DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
-  DATABASE_ADMIN_USER=${DATABASE_ADMIN_USER:-rundeck}
-  RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
-  RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
-  NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
-  SKIP_DATABASE_SETUP=${SKIP_DATABASE_SETUP:-"false"}
-  LOGIN_MODULE=${LOGIN_MODULE:-"RDpropertyfilelogin"}
-  JAAS_CONF_FILE=${JAAS_CONF_FILE:-"jaas-loginmodule.conf"}
-  KEYSTORE_PASS=${KEYSTORE_PASS:-"adminadmin"}
-  TRUSTSTORE_PASS=${TRUSTSTORE_PASS:-${KEYSTORE_PASS}}
+   DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
+   RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
+   DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
+   DATABASE_ADMIN_USER=${DATABASE_ADMIN_USER:-rundeck}
+   RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
+   RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
+   NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
+   SKIP_DATABASE_SETUP=${SKIP_DATABASE_SETUP:-"false"}
+   LOGIN_MODULE=${LOGIN_MODULE:-"RDpropertyfilelogin"}
+   JAAS_CONF_FILE=${JAAS_CONF_FILE:-"jaas-loginmodule.conf"}
+   KEYSTORE_PASS=${KEYSTORE_PASS:-"adminadmin"}
+   TRUSTSTORE_PASS=${TRUSTSTORE_PASS:-${KEYSTORE_PASS}}
 
-  update_user_password () {
-    (
-    echo "UPDATE mysql.user SET password=PASSWORD('${2}') WHERE user='${1}';"
-    echo "FLUSH PRIVILEGES;"
-    echo "quit"
-    ) |
-    mysql
-  }
+   update_user_password () {
+      (
+      echo "UPDATE mysql.user SET password=PASSWORD('${2}') WHERE user='${1}';"
+      echo "FLUSH PRIVILEGES;"
+      echo "quit"
+      ) |
+      mysql
+   }
 
-  echo "=>Initializing rundeck - This may take a few minutes"
-  if [ ! -f /var/lib/rundeck/.ssh/id_rsa ]; then
-      echo "=>Generating rundeck key"
-      sudo -u rundeck ssh-keygen -t rsa -b 4096 -f /var/lib/rundeck/.ssh/id_rsa -N ''
-  fi
+   echo "=>Initializing rundeck - This may take a few minutes"
+   if [ ! -f /var/lib/rundeck/.ssh/id_rsa ]; then
+       echo "=>Generating rundeck key"
+       sudo -u rundeck ssh-keygen -t rsa -b 4096 -f /var/lib/rundeck/.ssh/id_rsa -N ''
+   fi
 
   
-  # copy rundeck defaults
-  cp -R /opt/rundeck-defaults/* /etc/rundeck
-  chown -R rundeck:rundeck /etc/rundeck
+   # copy rundeck defaults
+   cp -R /opt/rundeck-defaults/* /etc/rundeck
+   chown -R rundeck:rundeck /etc/rundeck
 
 
-  if [ ! -f /etc/rundeck/ssl/truststore ]; then
-    echo "=>Generating ssl cert"
-    sudo -u rundeck mkdir -p /etc/rundeck/ssl
-    if [ ! -f /etc/rundeck/ssl/keystore ]; then
-        sudo -u rundeck keytool -importkeystore -destkeystore /etc/rundeck/ssl/keystore -srckeystore /etc/ssl/certs/java/cacerts -deststoretype JKS -srcstoretype JKS -deststorepass ${TRUSTSTORE_PASS} -srcstorepass changeit -noprompt > /dev/null
-    fi
-    sudo -u rundeck keytool -keystore /etc/rundeck/ssl/keystore -alias rundeck -genkey -keyalg RSA -keypass ${KEYSTORE_PASS} -storepass ${TRUSTSTORE_PASS} -dname "cn=localhost, o=OME, c=DE"
-    cp /etc/rundeck/ssl/keystore /etc/rundeck/ssl/truststore
-  fi
+   if [ ! -f /etc/rundeck/ssl/truststore ]; then
+       echo "=>Generating ssl cert"
+       sudo -u rundeck mkdir -p /etc/rundeck/ssl
+       if [ ! -f /etc/rundeck/ssl/keystore ]; then
+           sudo -u rundeck keytool -importkeystore -destkeystore /etc/rundeck/ssl/keystore -srckeystore /etc/ssl/certs/java/cacerts -deststoretype JKS -srcstoretype JKS -deststorepass ${TRUSTSTORE_PASS} -srcstorepass changeit -noprompt > /dev/null
+       fi
+       sudo -u rundeck keytool -keystore /etc/rundeck/ssl/keystore -alias rundeck -genkey -keyalg RSA -keypass ${KEYSTORE_PASS} -storepass ${TRUSTSTORE_PASS} -dname "cn=localhost, o=OME, c=DE"
+       cp /etc/rundeck/ssl/keystore /etc/rundeck/ssl/truststore
+   fi
 
-  if [ "${NO_LOCAL_MYSQL}" == "false" ]; then
-    echo "=>Initializing local MySQL..."
-    if [ "$(ls -A /var/lib/mysql)" ]; then
-      /etc/init.d/mysql start
-    else
-      echo "=>MySQL datadir is empty...initializing"
-      /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-      /etc/init.d/mysql start
-    fi
+   if [ "${NO_LOCAL_MYSQL}" == "false" ]; then
+      echo "=>Initializing local MySQL..."
+      if [ "$(ls -A /var/lib/mysql)" ]; then
+         /etc/init.d/mysql start
+      else
+         echo "=>MySQL datadir is empty...initializing"
+         /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+         /etc/init.d/mysql start
+     fi
 
-    (
-    echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
-    echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
-    echo "quit"
-    ) |
-    mysql
-    sleep 5
-    /etc/init.d/mysql stop
-    # Add MySQL to supervisord conf
-    cat /opt/mysql.conf >> /etc/supervisor/conf.d/rundeck.conf
-  else
-    echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
-    if [[ "${DATABASE_URL}" == *"mysql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
-      echo "=>Initializing remote MySQL setup"
-      (
-        echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
-        echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'%' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
-        echo "quit"
-        ) |
-        mysql --host=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)") --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
-    else
-      echo "=>Skipping remote database setup"
-    fi
-  fi
+     (
+     echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
+     echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+     echo "quit"
+     ) |
+     mysql
+     sleep 5
+     /etc/init.d/mysql stop
+     # Add MySQL to supervisord conf
+     cat /opt/mysql.conf >> /etc/supervisor/conf.d/rundeck.conf
+   else
+      echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
+      if [[ "${DATABASE_URL}" == *"mysql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
+        echo "=>Initializing remote MySQL setup"
+        (
+         echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
+         echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'%' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+         echo "quit"
+         ) |
+         mysql --host=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)") --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
+      else
+        echo "=>Skipping remote database setup"
+      fi
+   fi
 
   if ! [ -z "${EXTERNAL_SERVER_URL}" ]; then
     # if external_server_url is specified, write it in
     sed -i 's,#grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
   fi
 
-  sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
-  sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
-  if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
-    :
-  else
-    echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
-  fi
-  if grep -q dataSource.password /etc/rundeck/rundeck-config.properties ; then
-    sed -i 's,dataSource.password = .*,dataSource.password = '${RUNDECK_PASSWORD}',g' /etc/rundeck/rundeck-config.properties
-  else
-    echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
-  fi
+   sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
+   sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
+   if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
+      :
+   else
+      echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
+   fi
+   if grep -q dataSource.password /etc/rundeck/rundeck-config.properties ; then
+      sed -i 's,dataSource.password = .*,dataSource.password = '${RUNDECK_PASSWORD}',g' /etc/rundeck/rundeck-config.properties
+   else
+      echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+   fi
 
-  # Check if we need to set the rundeck.gui.brand.html property
-  if [ -n "${GUI_BRAND_HTML}" ]; then
-    if grep -q rundeck.gui.brand.html /etc/rundeck/rundeck-config.properties ; then
-      sed -i 's/rundeck\.gui\.brand\.html.*$/rundeck\.gui\.brand\.html = '${GUI_BRAND_HTML}'/g' /etc/rundeck/rundeck-config.properties
-    else
-      echo "rundeck.gui.brand.html = ${GUI_BRAND_HTML}" >> /etc/rundeck/rundeck-config.properties
-    fi
-  fi
+   # Check if we need to set the rundeck.gui.brand.html property
+   if [ -n "${GUI_BRAND_HTML}" ]; then
+      if grep -q rundeck.gui.brand.html /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/rundeck\.gui\.brand\.html.*$/rundeck\.gui\.brand\.html = '${GUI_BRAND_HTML}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "rundeck.gui.brand.html = ${GUI_BRAND_HTML}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
 
-  # Check if we need to set the grails.mail.host property
-  if [ -n "${SMTP_HOST}" ]; then
-    if grep -q grails.mail.host /etc/rundeck/rundeck-config.properties ; then
-      sed -i 's/grails\.mail\.host.*$/grails\.mail\.host = '${SMTP_HOST}'/g' /etc/rundeck/rundeck-config.properties
-    else
-      echo "grails.mail.host = ${SMTP_HOST}" >> /etc/rundeck/rundeck-config.properties
-    fi
-  fi
+   # Check if we need to set the grails.mail.host property
+   if [ -n "${SMTP_HOST}" ]; then
+      if grep -q grails.mail.host /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.host.*$/grails\.mail\.host = '${SMTP_HOST}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.host = ${SMTP_HOST}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
 
-  # Check if we need to set the grails.mail.port property
-  if [ -n "${SMTP_PORT}" ]; then
-    if grep -q grails.mail.port /etc/rundeck/rundeck-config.properties ; then
-      sed -i 's/grails\.mail\.port.*$/grails\.mail\.port = '${SMTP_PORT}'/g' /etc/rundeck/rundeck-config.properties
-    else
-      echo "grails.mail.port = ${SMTP_PORT}" >> /etc/rundeck/rundeck-config.properties
-    fi
-  fi
+   # Check if we need to set the grails.mail.port property
+   if [ -n "${SMTP_PORT}" ]; then
+      if grep -q grails.mail.port /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.port.*$/grails\.mail\.port = '${SMTP_PORT}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.port = ${SMTP_PORT}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
 
-  # Check if we need to set the grails.mail.username property
-  if [ -n "${SMTP_USERNAME}" ]; then
-    if grep -q grails.mail.username /etc/rundeck/rundeck-config.properties ; then
-      sed -i 's/grails\.mail\.username.*$/grails\.mail\.username = '${SMTP_USERNAME}'/g' /etc/rundeck/rundeck-config.properties
-    else
-      echo "grails.mail.username = ${SMTP_USERNAME}" >> /etc/rundeck/rundeck-config.properties
-    fi
-  fi
+   # Check if we need to set the grails.mail.username property
+   if [ -n "${SMTP_USERNAME}" ]; then
+      if grep -q grails.mail.username /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.username.*$/grails\.mail\.username = '${SMTP_USERNAME}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.username = ${SMTP_USERNAME}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
 
-  # Check if we need to set the grails.mail.password property
-  if [ -n "${SMTP_PASSWORD}" ]; then
-    if grep -q grails.mail.password /etc/rundeck/rundeck-config.properties ; then
-      sed -i 's/grails\.mail\.password.*$/grails\.mail\.password = '${SMTP_PASSWORD}'/g' /etc/rundeck/rundeck-config.properties
-    else
-      echo "grails.mail.password = ${SMTP_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
-    fi
-  fi
+   # Check if we need to set the grails.mail.password property
+   if [ -n "${SMTP_PASSWORD}" ]; then
+      if grep -q grails.mail.password /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.password.*$/grails\.mail\.password = '${SMTP_PASSWORD}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.password = ${SMTP_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
 
-  # Check if we need to set the grails.mail.default.from property
-  if [ -n "${SMTP_DEFAULT_FROM}" ]; then
-    if grep -q grails.mail.default.from /etc/rundeck/rundeck-config.properties ; then
-      sed -i 's/grails\.mail\.default\.from.*$/grails\.mail\.default\.from = '${SMTP_DEFAULT_FROM}'/g' /etc/rundeck/rundeck-config.properties
-    else
-      echo "grails.mail.default.from = ${SMTP_DEFAULT_FROM}" >> /etc/rundeck/rundeck-config.properties
-    fi
-  fi
+   # Check if we need to set the grails.mail.default.from property
+   if [ -n "${SMTP_DEFAULT_FROM}" ]; then
+      if grep -q grails.mail.default.from /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/grails\.mail\.default\.from.*$/grails\.mail\.default\.from = '${SMTP_DEFAULT_FROM}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "grails.mail.default.from = ${SMTP_DEFAULT_FROM}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
 
-  # framework.properties
-  sed -i 's,framework.server.name\ \=.*,framework.server.name\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
-  sed -i 's,framework.server.hostname\ \=.*,framework.server.hostname\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
-  sed -i 's,framework.server.port\ \=.*,framework.server.port\ \=\ '${SERVER_PORT}',g' /etc/rundeck/framework.properties
-  sed -i 's,framework.server.url\ \=.*,framework.server.url\ \=\ '${SERVER_URL}',g' /etc/rundeck/framework.properties
+   # framework.properties
+   sed -i 's,framework.server.name\ \=.*,framework.server.name\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
+   sed -i 's,framework.server.hostname\ \=.*,framework.server.hostname\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
+   sed -i 's,framework.server.port\ \=.*,framework.server.port\ \=\ '${SERVER_PORT}',g' /etc/rundeck/framework.properties
+   sed -i 's,framework.server.url\ \=.*,framework.server.url\ \=\ '${SERVER_URL}',g' /etc/rundeck/framework.properties
 
-  # if the admin pwd is still the default password and RUNDECK_ADMIN_PASSWORD is defined
-  if $(grep --silent '^admin:admin,' /etc/rundeck/realm.properties) && [[ -n "${RUNDECK_ADMIN_PASSWORD}" ]]; then
-    sed -i 's*^admin:admin,*admin:'${RUNDECK_ADMIN_PASSWORD}',*g' /etc/rundeck/realm.properties
-    # If EXTERNAL_SERVER_URL is being used, the inside/outside ports for rundeck confuse the standard
-    # CLI tools like rd-jobs, rd-project and they won't work.  You will need to use the new and improved
-    # rundeck-cli tools.  To make the new CLI tools easier to use, go ahead and add an API token for the
-    # admin account as a hash of the admin password.
-    if [[ -n "${EXTERNAL_SERVER_URL}" ]]; then
-      grep --silent "rundeck\.tokens\.file" /etc/rundeck/framework.properties || \
-        echo "rundeck.tokens.file=/etc/rundeck/tokens.properties" >> /etc/rundeck/framework.properties
-      mytoken=$(printf '%s' "${RUNDECK_ADMIN_PASSWORD}" | md5sum | cut -d ' ' -f 1)
-      [[ -e /etc/rundeck/tokens.properties ]] \
-        && grep --silent "^admin:" /etc/rundeck/tokens.properties \
-        && sed -i -e "s,^admin:.*,admin: ${mytoken},g" /etc/rundeck/tokens.properties \
-        || echo "admin: ${mytoken}" >> /etc/rundeck/tokens.properties
-      chown rundeck:rundeck /etc/rundeck/tokens.properties
-    fi
-  fi
+   # if the admin pwd is still the default password and RUNDECK_ADMIN_PASSWORD is defined
+   if $(grep --silent '^admin:admin,' /etc/rundeck/realm.properties) && [[ -n "${RUNDECK_ADMIN_PASSWORD}" ]]; then
+      sed -i 's*^admin:admin,*admin:'${RUNDECK_ADMIN_PASSWORD}',*g' /etc/rundeck/realm.properties
+      # If EXTERNAL_SERVER_URL is being used, the inside/outside ports for rundeck confuse the standard
+      # CLI tools like rd-jobs, rd-project and they won't work.  You will need to use the new and improved
+      # rundeck-cli tools.  To make the new CLI tools easier to use, go ahead and add an API token for the
+      # admin account as a hash of the admin password.
+      if [[ -n "${EXTERNAL_SERVER_URL}" ]]; then
+        grep --silent "rundeck\.tokens\.file" /etc/rundeck/framework.properties || \
+          echo "rundeck.tokens.file=/etc/rundeck/tokens.properties" >> /etc/rundeck/framework.properties
+        mytoken=$(printf '%s' "${RUNDECK_ADMIN_PASSWORD}" | md5sum | cut -d ' ' -f 1)
+        [[ -e /etc/rundeck/tokens.properties ]] \
+          && grep --silent "^admin:" /etc/rundeck/tokens.properties \
+          && sed -i -e "s,^admin:.*,admin: ${mytoken},g" /etc/rundeck/tokens.properties \
+          || echo "admin: ${mytoken}" >> /etc/rundeck/tokens.properties
+        chown rundeck:rundeck /etc/rundeck/tokens.properties
+      fi
+   fi
 
-  if [ "${RUNDECK_STORAGE_PROVIDER}" == "db" ]; then
-    echo "rundeck.storage.provider.1.type=db" >> /etc/rundeck/rundeck-config.properties
-    echo "rundeck.storage.provider.1.path=/" >> /etc/rundeck/rundeck-config.properties
-  fi
+   if [ "${RUNDECK_STORAGE_PROVIDER}" == "db" ]; then
+      echo "rundeck.storage.provider.1.type=db" >> /etc/rundeck/rundeck-config.properties
+      echo "rundeck.storage.provider.1.path=/" >> /etc/rundeck/rundeck-config.properties
+   fi
 
-  if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
-    echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
-  fi
+   if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
+      echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
+   fi
 
-  sed -i 's,JAAS_CONF\=.*,JAAS_CONF\="/etc/rundeck/'${JAAS_CONF_FILE}'",' /etc/rundeck/profile
-  sed -i 's,LOGIN_MODULE\=.*,LOGIN_MODULE\="'${LOGIN_MODULE}'",' /etc/rundeck/profile
-  sed -i 's,keystore\.password\=.*,keystore\.password\='${KEYSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
-  sed -i 's,key\.password\=.*,key\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
-  sed -i 's,truststore\.password\=.*,truststore\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
+   sed -i 's,JAAS_CONF\=.*,JAAS_CONF\="/etc/rundeck/'${JAAS_CONF_FILE}'",' /etc/rundeck/profile
+   sed -i 's,LOGIN_MODULE\=.*,LOGIN_MODULE\="'${LOGIN_MODULE}'",' /etc/rundeck/profile
+   sed -i 's,keystore\.password\=.*,keystore\.password\='${KEYSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
+   sed -i 's,key\.password\=.*,key\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
+   sed -i 's,truststore\.password\=.*,truststore\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
 
-  echo -e "\n\n\n"
-  echo "==================================================================="
-  if [ "${NO_LOCAL_MYSQL}" == "true" ]; then
-    echo "NO_LOCAL_MYSQL set to true so local MySQL has not been configured or started"
-  else
-    echo "MySQL user 'root' has no password but only allows local connections"
-  fi
-  echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
-  echo "Rundeck project storage type set to ${RUNDECK_PROJECT_STORAGE_TYPE}"
-  echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
-  echo "Rundeck public key:"
-  cat /var/lib/rundeck/.ssh/id_rsa.pub
-  echo "Server URL set to ${SERVER_URL}"
-  echo "==================================================================="
+   echo -e "\n\n\n"
+   echo "==================================================================="
+   if [ "${NO_LOCAL_MYSQL}" == "true" ]; then
+      echo "NO_LOCAL_MYSQL set to true so local MySQL has not been configured or started"
+   else
+      echo "MySQL user 'root' has no password but only allows local connections"
+   fi
+   echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
+   echo "Rundeck project storage type set to ${RUNDECK_PROJECT_STORAGE_TYPE}"
+   echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
+   echo "Rundeck public key:"
+   cat /var/lib/rundeck/.ssh/id_rsa.pub
+   echo "Server URL set to ${SERVER_URL}"
+   echo "==================================================================="
 
-  touch ${initfile}
+   touch ${initfile}
 fi
 
 echo "Starting Supervisor.  You can safely CTRL-C and the container will continue to run with or without the -d (daemon) option"
