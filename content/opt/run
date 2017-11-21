@@ -31,7 +31,6 @@ fi
 
 if [ ! -f "${initfile}" ]; then
    SERVER_URL=${SERVER_URL:-"https://0.0.0.0:4443"}
-   EXTERNAL_URL=${EXTERNAL_SERVER_URL:-"${SERVER_URL}"}
    SERVER_HOSTNAME=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $1}')
    SERVER_PROTO=$(echo ${SERVER_URL} | awk -F/ '{print $1}' | awk -F: '{print $1}')
    SERVER_PORT=$(echo ${SERVER_URL} | awk -F/ '{print $3}' | awk -F: '{print $2}')
@@ -40,23 +39,23 @@ if [ ! -f "${initfile}" ]; then
       if [ ${SERVER_PROTO} == "https" ]; then
          SERVER_PORT=443
       else
-         SERVER_PORT=80
+        SERVER_PORT=80
       fi
    fi
 
-   # Docker secrets support
-   if [ -f /run/secrets/RUNDECK_PASSWORD ]; then
-      RUNDECK_PASSWORD=$(< /run/secrets/RUNDECK_PASSWORD)
-   fi
-   if [ -f /run/secrets/DATABASE_ADMIN_PASSWORD ]; then
-      DATABASE_ADMIN_PASSWORD=$(< /run/secrets/DATABASE_ADMIN_PASSWORD)
-   fi
-   if [ -f /run/secrets/KEYSTORE_PASS ]; then
-      KEYSTORE_PASS=$(< /run/secrets/KEYSTORE_PASS)
-   fi
-   if [ -f /run/secrets/TRUSTSTORE_PASS ]; then
-      TRUSTSTORE_PASS=$(< /run/secrets/TRUSTSTORE_PASS)
-   fi
+  # Docker secrets support
+  if [ -f /run/secrets/RUNDECK_PASSWORD ]; then
+    RUNDECK_PASSWORD=$(< /run/secrets/RUNDECK_PASSWORD)
+  fi
+  if [ -f /run/secrets/DATABASE_ADMIN_PASSWORD ]; then
+    DATABASE_ADMIN_PASSWORD=$(< /run/secrets/DATABASE_ADMIN_PASSWORD)
+  fi
+  if [ -f /run/secrets/KEYSTORE_PASS ]; then
+    KEYSTORE_PASS=$(< /run/secrets/KEYSTORE_PASS)
+  fi
+  if [ -f /run/secrets/TRUSTSTORE_PASS ]; then
+    TRUSTSTORE_PASS=$(< /run/secrets/TRUSTSTORE_PASS)
+  fi
 
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
@@ -86,13 +85,11 @@ if [ ! -f "${initfile}" ]; then
        sudo -u rundeck ssh-keygen -t rsa -b 4096 -f /var/lib/rundeck/.ssh/id_rsa -N ''
    fi
 
-   if [ "$(ls -A /etc/rundeck)" ]; then
-       echo "=>/etc/rundeck check OK"
-   else
-       echo "=>/etc/rundeck empty...setting up defaults"
-       cp -R /opt/rundeck-defaults/* /etc/rundeck
-       chown -R rundeck:rundeck /etc/rundeck
-   fi
+  
+   # copy rundeck defaults
+   cp -R /opt/rundeck-defaults/* /etc/rundeck
+   chown -R rundeck:rundeck /etc/rundeck
+
 
    if [ ! -f /etc/rundeck/ssl/truststore ]; then
        echo "=>Generating ssl cert"
@@ -139,7 +136,11 @@ if [ ! -f "${initfile}" ]; then
       fi
    fi
 
-   sed -i 's,grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_URL}',g' /etc/rundeck/rundeck-config.properties
+  if ! [ -z "${EXTERNAL_SERVER_URL}" ]; then
+    # if external_server_url is specified, write it in
+    sed -i 's,#grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
+  fi
+
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
@@ -152,7 +153,7 @@ if [ ! -f "${initfile}" ]; then
    else
       echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
    fi
-   
+
    # Check if we need to set the rundeck.gui.brand.html property
    if [ -n "${GUI_BRAND_HTML}" ]; then
       if grep -q rundeck.gui.brand.html /etc/rundeck/rundeck-config.properties ; then
@@ -161,7 +162,7 @@ if [ ! -f "${initfile}" ]; then
         echo "rundeck.gui.brand.html = ${GUI_BRAND_HTML}" >> /etc/rundeck/rundeck-config.properties
       fi
    fi
-   
+
    # Check if we need to set the grails.mail.host property
    if [ -n "${SMTP_HOST}" ]; then
       if grep -q grails.mail.host /etc/rundeck/rundeck-config.properties ; then
@@ -205,8 +206,8 @@ if [ ! -f "${initfile}" ]; then
       else
         echo "grails.mail.default.from = ${SMTP_DEFAULT_FROM}" >> /etc/rundeck/rundeck-config.properties
       fi
-   fi 
-   
+   fi
+
    # framework.properties
    sed -i 's,framework.server.name\ \=.*,framework.server.name\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
    sed -i 's,framework.server.hostname\ \=.*,framework.server.hostname\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
