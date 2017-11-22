@@ -87,9 +87,10 @@ if [ ! -f "${initfile}" ]; then
 
   
    # copy rundeck defaults
-   cp -R /opt/rundeck-defaults/* /etc/rundeck
-   chown -R rundeck:rundeck /etc/rundeck
-
+   if [ ! "$(ls -A /etc/rundeck)" ]; then
+      cp -R /opt/rundeck-defaults/* /etc/rundeck
+      chown -R rundeck:rundeck /etc/rundeck
+   fi
 
    if [ ! -f /etc/rundeck/ssl/truststore ]; then
        echo "=>Generating ssl cert"
