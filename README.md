@@ -30,7 +30,7 @@ sudo docker run -p 4440:4440 -e EXTERNAL_SERVER_URL=http://MY.HOSTNAME.COM:4440 
 # SSL
 Start a new container, bind to host's port 4443, and enable SSL.   Note: Make sure to update /etc/rundeck/ssl/keystore and /etc/rundeck/ssl/truststore for Production systems as the default certificate is self-signed. Set KEYSTORE_PASS & TRUSTSTORE_PASS to the passwords of those files. Both files can be volume mounted.
 ```
-sudo docker run -p 4443:4443 -e SERVER_URL=https://MY.HOSTNAME.COM:4443 -e RUNDECK_WITH_SSL=true --name rundeck -t jordan/rundeck:latest
+sudo docker run -p 4443:4443 -e EXTERNAL_SERVER_URL=https://MY.HOSTNAME.COM:4443 -e RUNDECK_WITH_SSL=true --name rundeck -t jordan/rundeck:latest
 ```
 
 # Rundeck plugins
