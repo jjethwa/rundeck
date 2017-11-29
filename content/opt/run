@@ -139,7 +139,7 @@ if [ ! -f "${initfile}" ]; then
 
   if ! [ -z "${EXTERNAL_SERVER_URL}" ]; then
     # if external_server_url is specified, write it in
-    sed -i 's,#grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
+    sed -i 's,#\?grails.serverURL\=.*,grails.serverURL\='${EXTERNAL_SERVER_URL}',g' /etc/rundeck/rundeck-config.properties
   fi
 
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
