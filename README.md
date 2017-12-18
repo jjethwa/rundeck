@@ -6,7 +6,7 @@ This repository contains the source for the [Rundeck](http://rundeck.org/) [dock
 # Image details
 
 1. Based on debian:stretch
-1. Supervisor, Apache2, and rundeck
+1. Supervisor, MariaDB, and rundeck
 1. No SSH.  Use docker exec or [nsenter](https://github.com/jpetazzo/nsenter)
 1. If RUNDECK_PASSWORD is not supplied, it will be randomly generated and shown via stdout.
 1. Supply the EXTERNAL_SERVER_URL or it will default to https://0.0.0.0:4443
