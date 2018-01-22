@@ -261,7 +261,12 @@ if [ ! -f "${initfile}" ]; then
    echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
    echo "Rundeck public key:"
    cat /var/lib/rundeck/.ssh/id_rsa.pub
-   echo "Server URL set to ${SERVER_URL}"
+   if ! [ -z "${EXTERNAL_SERVER_URL}" ]; then
+      echo "Server URL set to ${EXTERNAL_SERVER_URL}"
+   else
+      echo "Server URL set to ${SERVER_URL}"
+   fi
+   
    echo "==================================================================="
 
    touch ${initfile}
