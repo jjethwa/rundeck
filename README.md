@@ -108,7 +108,7 @@ sudo docker run -p 4440:4440 \
   -e EXTERNAL_SERVER_URL=http://MY.HOSTNAME.COM:4440 \
   -e HTTP_PROXY="http://WEBPROXY:PORT" \
   -e HTTPS_PROXY="http://WEBPROXY:PORT" \
-  -e RDECK_JVM="-Djava.net.useSystemProxies=true" \
+  -e RDECK_JVM_SETTINGS="-Djava.net.useSystemProxies=true" \
   --name rundeck -t jordan/rundeck:latest
 ```
 
