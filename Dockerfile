@@ -19,8 +19,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -qq update && \
     apt-get -qqy install -t stretch-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client pwgen curl git uuid-runtime parallel && \
     cd /tmp/ && \
-    curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck_2.10.5-1-GA_all.deb && \
-    echo '069114a31fe3e17cb0173f42de4c2d48deaafd519b957c0c79d6179d56dbb972  rundeck.deb' > /tmp/rundeck.sig && \
+    curl -Lo /tmp/rundeck.deb http://dl.bintray.com/rundeck/rundeck-deb/rundeck_2.10.6-1-GA_all.deb && \
+    echo '91f259838d99069ec2b80c13dd0baca54197d8cba3401dff5f7296adc6798838  rundeck.deb' > /tmp/rundeck.sig && \
     shasum -a256 -c /tmp/rundeck.sig && \
     curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v1.0.22/rundeck-cli_1.0.22-1_all.deb && \
     echo '2dd77e3ebda708fd80ce4630cc6d5a0a56b51399d35ef2bdf72ece8a2e401ecf  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
