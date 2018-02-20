@@ -118,3 +118,6 @@ See: http://rundeck.org/docs/administration/configuring-ssl.html#using-an-ssl-te
 
 # Upgrading
 See: http://rundeck.org/docs/upgrading/index.html
+
+# Default credentials
+admin/admin
