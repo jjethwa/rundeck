@@ -56,6 +56,9 @@ if [ ! -f "${initfile}" ]; then
   if [ -f /run/secrets/TRUSTSTORE_PASS ]; then
     TRUSTSTORE_PASS=$(< /run/secrets/TRUSTSTORE_PASS)
   fi
+  if [ -f /run/secrets/RUNDECK_ADMIN_PASSWORD ]; then
+    RUNDECK_ADMIN_PASSWORD=$(< /run/secrets/RUNDECK_ADMIN_PASSWORD)
+  fi
 
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
