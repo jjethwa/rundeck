@@ -275,7 +275,12 @@ if [ ! -f "${initfile}" ]; then
    touch ${initfile}
 fi
 
-echo "Starting Supervisor"
+echo -e "\n"
+echo "Starting Supervisor..."
+echo "It can take anywhere from 30 seconds up to a few minutes for the UI"
+echo "to become available depending on your container/host VM resources."
+echo "All further output is stdout/stderr from the supervisor process."
+echo -e "\n"
 
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n &
 trap "supervisorctl shutdown && wait" SIGTERM
