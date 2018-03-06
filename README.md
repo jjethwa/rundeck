@@ -38,7 +38,7 @@ To add (external) plugins, add the jars to the /opt/rundeck-plugins volume and t
 
 # Docker secrets
 Reference: https://docs.docker.com/engine/swarm/secrets/
-The entrypoint run script will check for docker secrets set for RUNDECK_PASSWORD, DATABASE_ADMIN_PASSWORD, KEYSTORE_PASS, and TRUSTSTORE_PASS.  If the secret has not been set, it will then check for the environment variable and finally default to generating a random value.
+The entrypoint run script will check for docker secrets set for RUNDECK_ADMIN_PASSWORD, RUNDECK_PASSWORD, DATABASE_ADMIN_PASSWORD, KEYSTORE_PASS, and TRUSTSTORE_PASS.  If the secret has not been set, it will then check for the environment variable and finally default to generating a random value.
 
 # Environment variables
 
