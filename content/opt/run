@@ -272,5 +272,8 @@ if [ ! -f "${initfile}" ]; then
    touch ${initfile}
 fi
 
-echo "Starting Supervisor.  You can safely CTRL-C and the container will continue to run with or without the -d (daemon) option"
-/usr/bin/supervisord -c /etc/supervisor/conf.d/rundeck.conf >> /dev/null
+echo "Starting Supervisor"
+
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf -n &
+trap "supervisorctl shutdown && wait" SIGTERM
+wait
