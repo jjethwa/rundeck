@@ -128,13 +128,20 @@ if [ ! -f "${initfile}" ]; then
    else
       echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
       if [[ "${DATABASE_URL}" == *"mysql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
+	MYSQL_CNX_STRING=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)")
+	MYSQL_SERVER_NODE=${MYSQL_CNX_STRING}
+	MYSQL_SERVER_PORT=3306
+	echo ${MYSQL_CNX_STRING} | grep -q ':' && {
+	 MYSQL_SERVER_NODE=$(echo ${MYSQL_CNX_STRING}|awk -F':' '{print $1}')
+	 MYSQL_SERVER_PORT=$(echo ${MYSQL_CNX_STRING}|awk -F':' '{print $2}')
+        }
         echo "=>Initializing remote MySQL setup"
         (
          echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
          echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'%' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
          echo "quit"
          ) |
-         mysql --host=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)") --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
+         mysql --host=${MYSQL_SERVER_NODE} --port=${MYSQL_SERVER_PORT} --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
       else
         echo "=>Skipping remote database setup"
       fi
