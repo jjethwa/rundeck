@@ -245,12 +245,24 @@ if [ ! -f "${initfile}" ]; then
    fi
 
    if [ "${RUNDECK_STORAGE_PROVIDER}" == "db" ]; then
-      echo "rundeck.storage.provider.1.type=db" >> /etc/rundeck/rundeck-config.properties
-      echo "rundeck.storage.provider.1.path=/" >> /etc/rundeck/rundeck-config.properties
+      if grep -q rundeck.storage.provider.1.type /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/rundeck\.storage\.provider\.1\.type.*$/rundeck\.storage\.provider\.1\.type='${RUNDECK_STORAGE_PROVIDER}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "rundeck.storage.provider.1.type=db" >> /etc/rundeck/rundeck-config.properties
+      fi
+      if grep -q rundeck.storage.provider.1.path /etc/rundeck/rundeck-config.properties ; then
+        :
+      else
+        echo "rundeck.storage.provider.1.path=/" >> /etc/rundeck/rundeck-config.properties
+      fi
    fi
 
    if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
-      echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
+      if grep -q rundeck.projectsStorageType /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/rundeck\.projectsStorageType.*$/rundeck\.projectsStorageType='${RUNDECK_PROJECT_STORAGE_TYPE}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
+      fi
    fi
 
    sed -i 's,JAAS_CONF\=.*,JAAS_CONF\="/etc/rundeck/'${JAAS_CONF_FILE}'",' /etc/rundeck/profile
