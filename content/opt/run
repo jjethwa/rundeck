@@ -128,20 +128,42 @@ if [ ! -f "${initfile}" ]; then
    else
       echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
       if [[ "${DATABASE_URL}" == *"mysql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
-	MYSQL_CNX_STRING=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)")
-	MYSQL_SERVER_NODE=${MYSQL_CNX_STRING}
-	MYSQL_SERVER_PORT=3306
-	echo ${MYSQL_CNX_STRING} | grep -q ':' && {
-	 MYSQL_SERVER_NODE=$(echo ${MYSQL_CNX_STRING}|awk -F':' '{print $1}')
-	 MYSQL_SERVER_PORT=$(echo ${MYSQL_CNX_STRING}|awk -F':' '{print $2}')
-        }
-        echo "=>Initializing remote MySQL setup"
-        (
-         echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
-         echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'%' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
-         echo "quit"
-         ) |
+        MYSQL_CNX_STRING=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:mysql:\/\/)(.*)(?=\/)")
+        MYSQL_SERVER_NODE=${MYSQL_CNX_STRING}
+        MYSQL_SERVER_PORT=3306
+        echo ${MYSQL_CNX_STRING} | grep -q ':' && {
+         MYSQL_SERVER_NODE=$(echo ${MYSQL_CNX_STRING}|awk -F':' '{print $1}')
+         MYSQL_SERVER_PORT=$(echo ${MYSQL_CNX_STRING}|awk -F':' '{print $2}')
+            }
+            echo "=>Initializing remote MySQL setup"
+            (
+             echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
+             echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'%' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+             echo "quit"
+             ) |
          mysql --host=${MYSQL_SERVER_NODE} --port=${MYSQL_SERVER_PORT} --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
+      elif [[ "${DATABASE_URL}" == *"postgresql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
+        PSQL_CNX_STRING=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:postgresql:\/\/)(.*)(?=\/)")
+        PSQL_SERVER_NODE=${PSQL_CNX_STRING}
+        PSQL_SERVER_PORT=5432
+        echo ${PSQL_CNX_STRING} | grep -q ':' && {
+            PSQL_SERVER_NODE=$(echo ${PSQL_CNX_STRING}|awk -F':' '{print $1}')
+            PSQL_SERVER_PORT=$(echo ${PSQL_CNX_STRING}|awk -F':' '{print $2}')
+        }
+
+        # Extract database from database url
+        URL_SPLIT=(`echo ${DATABASE_URL} | tr '/' ' '`)
+        PSQL_DATABASE=$(echo "${URL_SPLIT[${#URL_SPLIT[@]}-1]}")
+
+        echo "Connecting to postgres server hostname ${PSQL_SERVER_NODE}"
+        echo "Connecting to postgres server port ${PSQL_SERVER_PORT}"
+        echo "Postgres database ${PSQL_DATABASE}"
+        export PGPASSWORD=${DATABASE_ADMIN_PASSWORD}
+        echo "=>Initializing remote Postgres setup"
+        (
+           echo "CREATE DATABASE ${PSQL_DATABASE};"
+        ) |
+        psql --host ${PSQL_SERVER_NODE} --port ${PSQL_SERVER_PORT} --username ${DATABASE_ADMIN_USER} --dbname postgres
       else
         echo "=>Skipping remote database setup"
       fi
