@@ -112,7 +112,14 @@ sudo docker run -p 4440:4440 \
   -e RDECK_JVM_SETTINGS="-Djava.net.useSystemProxies=true" \
   --name rundeck -t jordan/rundeck:latest
 ```
-
+# External database instances
+The container starts it's own MySQL/MariaDB instance by default.  If you prefer to use an external database, you must set the following environment variables
+```
+SKIP_DATABASE_SETUP=true
+DATABASE_URL=<MYSQL_OR_POSTGRES_JDBC_URL>
+DATABASE_ADMIN_USER=<DATABASE_ADMIN_USER>
+DATABASE_ADMIN_PASSWORD=<DATABASE_ADMIN_PASSWORD>
+```
 
 # Using an SSL Terminated Proxy
 See: http://rundeck.org/docs/administration/configuring-ssl.html#using-an-ssl-terminated-proxy
