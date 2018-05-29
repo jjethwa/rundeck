@@ -179,7 +179,7 @@ if [ ! -f "${initfile}" ]; then
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
       :
    else
-      echo "dataSource.username = ${DATABASE_ADMIN_USER}" >> /etc/rundeck/rundeck-config.properties
+      echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
    fi
    if grep -q dataSource.password /etc/rundeck/rundeck-config.properties ; then
       sed -i 's,dataSource.password = .*,dataSource.password = '${RUNDECK_PASSWORD}',g' /etc/rundeck/rundeck-config.properties
