@@ -87,6 +87,8 @@ LOGIN_MODULE - RDpropertyfilelogin(default) or ldap. See: http://rundeck.org/doc
 JAAS_CONF_FILE - ldap configuration file name if ldap. You will need to mount the same file at /etc/rundeck/<filename of ldap>. See: http://rundeck.org/docs/administration/authenticating-users.html
 
 SKIP_DATABASE_SETUP - Set to true if database is already setup and/or database admin password is not known
+
+CLUSTER_MODE - Set to true if cluster mode abilities are needed
 ```
 
 # Volumes

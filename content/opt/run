@@ -72,6 +72,7 @@ if [ ! -f "${initfile}" ]; then
    JAAS_CONF_FILE=${JAAS_CONF_FILE:-"jaas-loginmodule.conf"}
    KEYSTORE_PASS=${KEYSTORE_PASS:-"adminadmin"}
    TRUSTSTORE_PASS=${TRUSTSTORE_PASS:-${KEYSTORE_PASS}}
+   CLUSTER_MODE=${CLUSTER_MODE:-"false"}
 
    update_user_password () {
       (
@@ -285,6 +286,11 @@ if [ ! -f "${initfile}" ]; then
       else
         echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
       fi
+   fi
+
+   if [ "${CLUSTER_MODE}" == "true" ]; then
+      echo "rundeck.clusterMode.enabled=true" >> /etc/rundeck/rundeck-config.properties
+    sed -i 's,rundeck.server.uuid \=.*,rundeck.server.uuid \= '$(uuidgen)',g' /etc/rundeck/framework.properties
    fi
 
    sed -i 's,JAAS_CONF\=.*,JAAS_CONF\="/etc/rundeck/'${JAAS_CONF_FILE}'",' /etc/rundeck/profile
