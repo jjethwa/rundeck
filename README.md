@@ -50,7 +50,7 @@ EXTERNAL_SERVER_URL - Use this if you are running rundeck behind a proxy.  This 
 
 RDECK_JVM_SETTINGS - Additional parameters sent to the rundeck JVM (ex: -Xmx1024m -Xms256m -XX:MaxMetaspaceSize=256m -server -Dfile.encoding=UTF-8 -Dserver.web.context=/rundeck)
 
-DATABASE_URL - For use with (container) external database (ex: jdbc:mysql://<HOSTNAME>:<PORT>/rundeckdb?autoReconnect=true)
+DATABASE_URL - For use with (container) external database (ex: jdbc:mysql://<HOSTNAME>:<PORT>/rundeckdb)
 
 RUNDECK_UID - The unix user ID to be used for the rundeck account when rundeck is booted.  This is useful for embedding this docker container into your development environment sharing files via docker volumes between the container and your host OS.  RUNDECK_GID also needs to be defined for this overload to take place.
 
@@ -87,8 +87,6 @@ LOGIN_MODULE - RDpropertyfilelogin(default) or ldap. See: http://rundeck.org/doc
 JAAS_CONF_FILE - ldap configuration file name if ldap. You will need to mount the same file at /etc/rundeck/<filename of ldap>. See: http://rundeck.org/docs/administration/authenticating-users.html
 
 SKIP_DATABASE_SETUP - Set to true if database is already setup and/or database admin password is not known
-
-CLUSTER_MODE - Set to true if cluster mode abilities are needed
 ```
 
 # Volumes
@@ -115,12 +113,26 @@ sudo docker run -p 4440:4440 \
   --name rundeck -t jordan/rundeck:latest
 ```
 # External database instances
-The container starts it's own MySQL/MariaDB instance by default.  If you prefer to use an external database, you must set the following environment variables
+The container starts it's own MySQL/MariaDB instance by default which can be used for Key Storage and/or
+Project Definition Storage. If you want use an external database, check the options below.
+
+OPTION 1: First time setup of external database, you must follow the steps below:
+- Create a user named *rundeck* in your external database
+- Set the following environment variables
 ```
-SKIP_DATABASE_SETUP=true
+NO_LOCAL_MYSQL=true
+RUNDECK_STORAGE_PROVIDER=<db_OR_file>
+RUNDECK_PROJECT_STORAGE_TYPE=<db_OR_file>
 DATABASE_URL=<MYSQL_OR_POSTGRES_JDBC_URL>
 DATABASE_ADMIN_USER=<DATABASE_ADMIN_USER>
 DATABASE_ADMIN_PASSWORD=<DATABASE_ADMIN_PASSWORD>
+RUNDECK_PASSWORD=<rundeck_DB_USER_PASSWORD>
+```
+
+OPTION 2: If external database is already setup, additionally set the following along with the environment variables 
+from OPTION 1:
+```
+SKIP_DATABASE_SETUP=true
 ```
 
 # Using an SSL Terminated Proxy
