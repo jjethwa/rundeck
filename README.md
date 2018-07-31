@@ -50,6 +50,8 @@ EXTERNAL_SERVER_URL - Use this if you are running rundeck behind a proxy.  This 
 
 RDECK_JVM_SETTINGS - Additional parameters sent to the rundeck JVM (ex: -Xmx1024m -Xms256m -XX:MaxMetaspaceSize=256m -server -Dfile.encoding=UTF-8 -Dserver.web.context=/rundeck)
 
+DATABASE_DRIVER - Supply the database driver classname if using a database besides MySQL/MariaDB or Postgres
+
 DATABASE_URL - For use with (container) external database (ex: jdbc:mysql://<HOSTNAME>:<PORT>/rundeckdb)
 
 RUNDECK_UID - The unix user ID to be used for the rundeck account when rundeck is booted.  This is useful for embedding this docker container into your development environment sharing files via docker volumes between the container and your host OS.  RUNDECK_GID also needs to be defined for this overload to take place.
