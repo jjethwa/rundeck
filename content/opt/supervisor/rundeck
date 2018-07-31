@@ -8,9 +8,6 @@
 
 prog="rundeckd"
 PIDFILE=/var/run/$prog.pid
-DAEMON="${JAVA_HOME:-/usr}/bin/java"
-DAEMON_ARGS="${RDECK_JVM} -cp ${BOOTSTRAP_CP} com.dtolabs.rundeck.RunServer /var/lib/rundeck 4440"
-rundeckd="$DAEMON $DAEMON_ARGS"
 
 function shutdown()
 {
@@ -26,4 +23,4 @@ echo $PID > $PIDFILE
 
 trap shutdown HUP INT QUIT ABRT KILL ALRM TERM TSTP
 
-while pgrep -F /var/run/rundeckd.pid > /dev/null; do sleep 5; done
+while pgrep -F /var/run/${prog}.pid > /dev/null; do sleep 5; done
