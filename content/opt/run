@@ -61,6 +61,7 @@ if [ ! -f "${initfile}" ]; then
   fi
 
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
+   DATABASE_DRIVER=${DATABASE_DRIVER:-"com.mysql.jdbc.Driver"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
    DATABASE_ADMIN_USER=${DATABASE_ADMIN_USER:-rundeck}
@@ -144,6 +145,7 @@ if [ ! -f "${initfile}" ]; then
              ) |
          mysql --host=${MYSQL_SERVER_NODE} --port=${MYSQL_SERVER_PORT} --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
       elif [[ "${DATABASE_URL}" == *"postgresql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
+        DATABASE_DRIVER="org.postgresql.Driver"
         PSQL_CNX_STRING=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:postgresql:\/\/)(.*)(?=\/)")
         PSQL_SERVER_NODE=${PSQL_CNX_STRING}
         PSQL_SERVER_PORT=5432
@@ -177,6 +179,7 @@ if [ ! -f "${initfile}" ]; then
 
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
+   sed -i 's,dataSource.driverClassName = .*,dataSource.driverClassName = '${DATABASE_DRIVER}',g' /etc/rundeck/rundeck-config.properties
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
       :
    else
