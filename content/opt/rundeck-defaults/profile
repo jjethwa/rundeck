@@ -56,7 +56,8 @@ for war in $(find $RDECK_INSTALL/bootstrap -name '*.war') ; do
   EXECUTABLE_WAR=$war
 done
 
-RDECK_JVM="-Djava.security.auth.login.config=$JAAS_CONF \
+RDECK_JVM="-Dloginmodule.conf.name=$JAAS_CONF \
+           -Drundeck.jaaslogin=true \
            -Dloginmodule.name=$LOGIN_MODULE \
            -Drdeck.config=$RDECK_CONFIG \
            -Drundeck.server.configDir=$RDECK_SERVER_CONFIG \
