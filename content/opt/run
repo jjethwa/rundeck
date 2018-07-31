@@ -179,16 +179,20 @@ if [ ! -f "${initfile}" ]; then
 
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
    sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
-   sed -i 's,dataSource.driverClassName = .*,dataSource.driverClassName = '${DATABASE_DRIVER}',g' /etc/rundeck/rundeck-config.properties
+   if grep -q dataSource.driverClassName /etc/rundeck/rundeck-config.properties ; then
+      sed -i 's,dataSource.driverClassName = .*,dataSource.driverClassName = '${DATABASE_DRIVER}',g' /etc/rundeck/rundeck-config.properties
+   else
+      echo -e "\ndataSource.driverClassName = ${DATABASE_DRIVER}" >> /etc/rundeck/rundeck-config.properties
+   fi
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
       :
    else
-      echo "dataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
+      echo -e "\ndataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
    fi
    if grep -q dataSource.password /etc/rundeck/rundeck-config.properties ; then
       sed -i 's,dataSource.password = .*,dataSource.password = '${RUNDECK_PASSWORD}',g' /etc/rundeck/rundeck-config.properties
    else
-      echo "dataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+      echo -e "\ndataSource.password = ${RUNDECK_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
    fi
 
    # Check if we need to set the rundeck.gui.brand.html property
