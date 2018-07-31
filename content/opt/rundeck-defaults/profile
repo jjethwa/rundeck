@@ -1,6 +1,28 @@
+#########
+# Rundeck Profile sourced from /etc/init.d/rundeckd
+#########
+#
+# NOTE: DO NOT MODIFY THIS FILE
+# It will be replaced when the package is upgraded and your changes will not be saved.
+#
+# ##################
+#
+# To override variables in this file, you can instead create a file at:
+#
+#     /etc/default/rundeckd
+#
+# which contains exports for any of the variables listed below. E.g.:
+#
+#    export RUNDECK_TEMPDIR=/path/to/tmpdir
+#
+# That file will be sourced before this one, allowing your exports to take precedence.
+#
+###############
+
 RDECK_INSTALL="${RDECK_INSTALL:-/var/lib/rundeck}"
 RDECK_BASE="${RDECK_BASE:-/var/lib/rundeck}"
 RDECK_CONFIG="${RDECK_CONFIG:-/etc/rundeck}"
+RDECK_CONFIG_FILE="${RDECK_CONFIG_FILE:-$RDECK_CONFIG/rundeck-config.properties}"
 RDECK_SERVER_BASE="${RDECK_SERVER_BASE:-$RDECK_BASE}"
 RDECK_SERVER_CONFIG="${RDECK_SERVER_CONFIG:-$RDECK_CONFIG}"
 RDECK_SERVER_DATA="${RDECK_SERVER_DATA:-$RDECK_BASE/data}"
@@ -30,11 +52,11 @@ fi
 for jar in $(find $RDECK_INSTALL/cli -name '*.jar') ; do
   CLI_CP=${CLI_CP:+$CLI_CP:}$jar
 done
-for jar in $(find $RDECK_INSTALL/bootstrap -name '*.jar') ; do
-  BOOTSTRAP_CP=${BOOTSTRAP_CP:+$BOOTSTRAP_CP:}$jar
+for war in $(find $RDECK_INSTALL/bootstrap -name '*.war') ; do
+  EXECUTABLE_WAR=$war
 done
 
-RDECK_JVM="${RDECK_JVM} -Djava.security.auth.login.config=$JAAS_CONF \
+RDECK_JVM="-Djava.security.auth.login.config=$JAAS_CONF \
            -Dloginmodule.name=$LOGIN_MODULE \
            -Drdeck.config=$RDECK_CONFIG \
            -Drundeck.server.configDir=$RDECK_SERVER_CONFIG \
@@ -42,10 +64,11 @@ RDECK_JVM="${RDECK_JVM} -Djava.security.auth.login.config=$JAAS_CONF \
            -Drundeck.server.serverDir=$RDECK_INSTALL \
            -Drdeck.projects=$RDECK_PROJECTS \
            -Drdeck.runlogs=$RUNDECK_LOGDIR \
-           -Drundeck.config.location=$RDECK_CONFIG/rundeck-config.properties \
+           -Drundeck.config.location=$RDECK_CONFIG_FILE \
            -Djava.io.tmpdir=$RUNDECK_TEMPDIR \
            -Drundeck.server.workDir=$RUNDECK_WORKDIR \
-           -Dserver.http.port=$RDECK_HTTP_PORT"
+           -Dserver.http.port=$RDECK_HTTP_PORT \
+           -Drdeck.base=$RDECK_BASE"
 #
 # Set min/max heap size
 #
@@ -62,4 +85,4 @@ unset JRE_HOME
 
 umask 002
 
-rundeckd="$JAVA_CMD $RDECK_JVM $RDECK_JVM_OPTS -cp $BOOTSTRAP_CP com.dtolabs.rundeck.RunServer $RDECK_BASE"
+rundeckd="$JAVA_CMD $RDECK_JVM $RDECK_JVM_OPTS -jar $EXECUTABLE_WAR --skipinstall"
