@@ -13,13 +13,11 @@ if [[ -n "${RUNDECK_GID}" && -n "${RUNDECK_UID}" ]]; then
 fi
 
 # chown directories and files that might be coming from volumes
-chown -R mysql:mysql /var/lib/mysql
-chown -R rundeck:rundeck /etc/rundeck
-chown -R rundeck:rundeck /var/rundeck
-chown -R rundeck:adm /var/log/rundeck
-chown -R rundeck:rundeck /var/lib/rundeck
-chown -R rundeck:rundeck /opt/rundeck-defaults
-chown -R rundeck:rundeck /tmp/rundeck
+find /var/lib/mysql \
+  \! -user mysql -exec chown -R mysql:mysql {} \;
+find /etc/rundeck /var/rundeck /var/log/rundeck \
+  /var/lib/rundeck /opt/rundeck-defaults /tmp/rundeck \
+  \! -user rundeck -exec chown -R rundeck:rundeck {} \;
 chmod -R 750 /tmp/rundeck
 
 # Plugins
