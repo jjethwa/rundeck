@@ -88,7 +88,7 @@ if [ ! -f "${initfile}" ]; then
        sudo -u rundeck ssh-keygen -t rsa -b 4096 -f /var/lib/rundeck/.ssh/id_rsa -N ''
    fi
 
-  
+
    # copy rundeck defaults
    if [ ! "$(ls -A /etc/rundeck)" ]; then
       cp -R /opt/rundeck-defaults/* /etc/rundeck
@@ -247,6 +247,15 @@ if [ ! -f "${initfile}" ]; then
       fi
    fi
 
+   # Check if we need to set the quartz.threadPool.threadCount property
+   if [ -n "${RUNDECK_THREAD_COUNT}" ]; then
+      if grep -q quartz.threadPool.threadCount /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/quartz\.threadPool\.threadCount.*$/quartz\.threadPool\.threadCount = '${RUNDECK_THREAD_COUNT}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "quartz.threadPool.threadCount = ${RUNDECK_THREAD_COUNT}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
+
    # framework.properties
    sed -i 's,framework.server.name\ \=.*,framework.server.name\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
    sed -i 's,framework.server.hostname\ \=.*,framework.server.hostname\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
@@ -321,7 +330,7 @@ if [ ! -f "${initfile}" ]; then
    else
       echo "Server URL set to ${SERVER_URL}"
    fi
-   
+
    echo "==================================================================="
 
    touch ${initfile}
