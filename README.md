@@ -70,7 +70,7 @@ RUNDECK_PROJECT_STORAGE_TYPE - Options file (default) or db.  See: http://rundec
 
 RUNDECK_THREAD_COUNT = Number of threads that are available for concurrent execution of jobs. see: http://www.quartz-scheduler.org/documentation/quartz-2.x/configuration/ConfigThreadPool.html
 
-GUI_BRAND_HTML - HTML to show as title in app header. See: http://rundeck.org/docs/administration/gui-customization.html. Useful to show Rundeck environment where multiple Rundeck instances are deployed, e.g. GUI_BRAND_HTML='<span class="title">QA Environment</span>'
+GUI_BRAND_HTML - HTML to show as title in app header. See: https://rundeck.org/docs/administration/configuration/gui-customization.html. Useful to show Rundeck environment where multiple Rundeck instances are deployed, e.g. GUI_BRAND_HTML='<span class="title">QA Environment</span>'
 
 SMTP_HOST - The SMTP server host to use for email notifications.
 
