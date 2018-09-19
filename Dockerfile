@@ -20,11 +20,11 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -qq update && \
     apt-get -qqy install -t stretch-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo ca-certificates openssh-client mysql-server mysql-client postgresql-9.6 postgresql-client-9.6 pwgen curl git uuid-runtime parallel jq && \
     cd /tmp/ && \
-    curl -Lo /tmp/rundeck.deb https://dl.bintray.com/rundeck/rundeck-deb/rundeck_3.0.5.20180828-1.201808282140_all.deb && \
-    echo '2189f3e5e7b5f2b12b809827be06b2bd457f1be09fc7138d165acaaed91a9e06  rundeck.deb' > /tmp/rundeck.sig && \
+    curl -Lo /tmp/rundeck.deb https://dl.bintray.com/rundeck/rundeck-deb/rundeck_3.0.6.20180917-1.201809180437_all.deb && \
+    echo '891c858f161b54632d9d2f77f161165ae0ed06ba88b14e9744159ec6b5ed31c4  rundeck.deb' > /tmp/rundeck.sig && \
     shasum -a256 -c /tmp/rundeck.sig && \
-    curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v1.0.29/rundeck-cli_1.0.29-1_all.deb && \
-    echo '6708723c41858b81bde450eb69d6f605d655c62b546b5ed0ba351fb95cff0d60  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
+    curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v1.1.0/rundeck-cli_1.1.0-1_all.deb && \
+    echo '707110aa8f6fd3b66c46a1ebcd5659e809d0eec0b823b9b795b4498786f9ac69  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
     shasum -a256 -c /tmp/rundeck-cli.sig && \
     cd - && \
     dpkg -i /tmp/rundeck*.deb && rm /tmp/rundeck*.deb && \
