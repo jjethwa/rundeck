@@ -97,6 +97,7 @@ SKIP_DATABASE_SETUP - Set to true if database is already setup and/or database a
 
 ```
 /etc/rundeck
+/etc/locale.gen - In format of the well known locale.gen file. All locales listed in this file will get generated.
 /var/rundeck
 /var/lib/rundeck - Not recommended to use as a volume as it contains webapp.  For SSH key you can use the this volume: /var/lib/rundeck/.ssh
 /var/lib/mysql
