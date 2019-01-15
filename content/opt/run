@@ -313,6 +313,13 @@ if [ ! -f "${initfile}" ]; then
    sed -i 's,key\.password\=.*,key\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
    sed -i 's,truststore\.password\=.*,truststore\.password\='${TRUSTSTORE_PASS}',' /etc/rundeck/ssl/ssl.properties
 
+   # Generate the system wide locales in the background.
+   # It may take a long time, depending on the mounted /etc/locale.gen.
+   # The only part, where locale processing is known to be necessary, is
+   # the Icingaweb2 translation plugin and locale-gen should be finished
+   # until the first webpage is started.
+   locale-gen &
+
    echo -e "\n\n\n"
    echo "==================================================================="
    if [ "${NO_LOCAL_MYSQL}" == "true" ]; then
