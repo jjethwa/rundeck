@@ -90,7 +90,7 @@ if [ ! -f "${initfile}" ]; then
 
 
    # copy rundeck defaults
-   if [ ! "$(ls -A /etc/rundeck)" ]; then
+   if [ ! "$(ls -1 /etc/rundeck|grep -v lost+found)" ]; then
       cp -R /opt/rundeck-defaults/* /etc/rundeck
       chown -R rundeck:rundeck /etc/rundeck
    fi
