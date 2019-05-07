@@ -90,7 +90,7 @@ if [ ! -f "${initfile}" ]; then
 
 
    # copy rundeck defaults
-   if [ ! "$(ls -A /etc/rundeck)" ]; then
+   if [ ! "$(ls -1A /etc/rundeck|grep -v lost+found)" ]; then
       cp -R /opt/rundeck-defaults/* /etc/rundeck
       chown -R rundeck:rundeck /etc/rundeck
    fi
@@ -107,7 +107,7 @@ if [ ! -f "${initfile}" ]; then
 
    if [ "${NO_LOCAL_MYSQL}" == "false" ]; then
       echo "=>Initializing local MySQL..."
-      if [ "$(ls -A /var/lib/mysql)" ]; then
+      if [ "$(ls -A1 /var/lib/mysql|grep -v lost+found)" ]; then
          /etc/init.d/mysql start
       else
          echo "=>MySQL datadir is empty...initializing"
