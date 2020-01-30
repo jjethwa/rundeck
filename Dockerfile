@@ -23,7 +23,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     curl -Lo /tmp/rundeck.deb https://dl.bintray.com/rundeck/rundeck-deb/rundeck_3.2.1.20200113-1_all.deb && \
     echo '6809dbe006fc3589b711365f9a160e9331be178056471613b75d77c1f57fe49c  rundeck.deb' > /tmp/rundeck.sig && \
     shasum -a256 -c /tmp/rundeck.sig && \
-    curl -Lo /tmp/rundeck-cli.deb https://github.com/rundeck/rundeck-cli/releases/download/v1.1.7/rundeck-cli_1.1.7-1_all.deb && \
+    curl -Lo /tmp/rundeck-cli.deb https://dl.bintray.com/rundeck/rundeck-deb/rundeck-cli_1.1.7-1_all.deb && \
     echo 'd8f39c3cebcf3ed16d138cbd18e014303fef27234c32d276a1cf1462f7c250da  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
     shasum -a256 -c /tmp/rundeck-cli.sig && \
     cd - && \
