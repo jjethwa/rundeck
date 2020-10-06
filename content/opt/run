@@ -60,6 +60,7 @@ if [ ! -f "${initfile}" ]; then
 
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
    DATABASE_DRIVER=${DATABASE_DRIVER:-"com.mysql.jdbc.Driver"}
+   RUNDECK_USER=${RUNDECK_USER:-"rundeck"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
    DATABASE_ADMIN_USER=${DATABASE_ADMIN_USER:-rundeck}
@@ -117,7 +118,7 @@ if [ ! -f "${initfile}" ]; then
 
      (
      echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
-     echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+     echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO '${RUNDECK_USER}'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
      echo "quit"
      ) |
      mysql
@@ -138,7 +139,7 @@ if [ ! -f "${initfile}" ]; then
             echo "=>Initializing remote MySQL setup"
             (
              echo "CREATE DATABASE IF NOT EXISTS rundeckdb;"
-             echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO 'rundeck'@'%' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
+             echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO '${RUNDECK_USER}'@'%' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
              echo "quit"
              ) |
          mysql --host=${MYSQL_SERVER_NODE} --port=${MYSQL_SERVER_PORT} --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
@@ -185,7 +186,7 @@ if [ ! -f "${initfile}" ]; then
    if grep -q dataSource.username /etc/rundeck/rundeck-config.properties ; then
       :
    else
-      echo -e "\ndataSource.username = rundeck" >> /etc/rundeck/rundeck-config.properties
+      echo -e "\ndataSource.username = ${RUNDECK_USER}" >> /etc/rundeck/rundeck-config.properties
    fi
    if grep -q dataSource.password /etc/rundeck/rundeck-config.properties ; then
       sed -i 's,dataSource.password = .*,dataSource.password = '${RUNDECK_PASSWORD}',g' /etc/rundeck/rundeck-config.properties
@@ -327,7 +328,7 @@ if [ ! -f "${initfile}" ]; then
    else
       echo "MySQL user 'root' has no password but only allows local connections"
    fi
-   echo "MySQL user 'rundeck' password set to ${RUNDECK_PASSWORD}"
+   echo "MySQL user '${RUNDECK_USER}' password set to ${RUNDECK_PASSWORD}"
    echo "Rundeck project storage type set to ${RUNDECK_PROJECT_STORAGE_TYPE}"
    echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
    echo "Rundeck public key:"
