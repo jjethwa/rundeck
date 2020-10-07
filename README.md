@@ -60,6 +60,8 @@ RUNDECK_GID - The unix group ID to be used for the rundeck account when rundeck 
 
 RUNDECK_WITH_SSL - Enable SSL
 
+RUNDECK_USER - MySQL 'rundeck' username
+
 RUNDECK_PASSWORD - MySQL 'rundeck' user password
 
 RUNDECK_ADMIN_PASSWORD - The rundeck server admin password
