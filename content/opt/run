@@ -59,7 +59,7 @@ if [ ! -f "${initfile}" ]; then
   fi
 
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
-   DATABASE_DRIVER=${DATABASE_DRIVER:-"com.mysql.jdbc.Driver"}
+   DATABASE_DRIVER=${DATABASE_DRIVER:-"org.mariadb.jdbc.Driver"}
    RUNDECK_USER=${RUNDECK_USER:-"rundeck"}
    RUNDECK_PASSWORD=${RUNDECK_PASSWORD:-$(pwgen -s 15 1)}
    DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
