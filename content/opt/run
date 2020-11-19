@@ -177,7 +177,7 @@ if [ ! -f "${initfile}" ]; then
   fi
 
    sed -i 's,dataSource.dbCreate.*,,g' /etc/rundeck/rundeck-config.properties
-   sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL}',g' /etc/rundeck/rundeck-config.properties
+   sed -i 's,dataSource.url = .*,dataSource.url = '${DATABASE_URL//\&/\\\&}',g' /etc/rundeck/rundeck-config.properties
    if grep -q dataSource.driverClassName /etc/rundeck/rundeck-config.properties ; then
       sed -i 's,dataSource.driverClassName = .*,dataSource.driverClassName = '${DATABASE_DRIVER}',g' /etc/rundeck/rundeck-config.properties
    else
