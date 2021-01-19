@@ -303,9 +303,13 @@ if [ ! -f "${initfile}" ]; then
       fi
    fi
 
+   if [ -n "${RUNDECK_SERVER_UUID}" ]; then
+      echo "rundeck.server.uuid=${RUNDECK_SERVER_UUID}" >> /etc/rundeck/framework.properties
+   fi
+
    if [ "${CLUSTER_MODE}" == "true" ]; then
       echo "rundeck.clusterMode.enabled=true" >> /etc/rundeck/rundeck-config.properties
-    sed -i 's,rundeck.server.uuid \=.*,rundeck.server.uuid \= '$(uuidgen)',g' /etc/rundeck/framework.properties
+      sed -i 's,rundeck.server.uuid \=.*,rundeck.server.uuid \= '$(uuidgen)',g' /etc/rundeck/framework.properties
    fi
 
    sed -i 's,JAAS_CONF\=.*,JAAS_CONF\="/etc/rundeck/'${JAAS_CONF_FILE}'",' /etc/rundeck/profile
