@@ -1,0 +1,49 @@
+# Basic docker-compose to run rundeck, mariadb, and nginx
+# Modify to suit your environment
+# Use of secrets file is highly recommended
+# MYSQL_ROOT_PASSWORD and DATABASE_ADMIN_PASSWORD need to be the same value
+# Add volumes to mariadb and rundeck sections to maintain persistence
+
+version: '3'
+
+services:
+    mariadb:
+        image: mariadb:10.5.8
+        container_name: mariadb
+        restart: on-failure:5
+        environment:
+            MYSQL_ROOT_PASSWORD: "<CHANGE_ME>"
+
+    rundeck:
+        image: ${RUNDECK_IMAGE:-jordan/rundeck:latest}
+        container_name: rundeck
+        links:
+            - mariadb
+        depends_on:
+            - mariadb
+        restart: on-failure:5
+        environment:
+            EXTERNAL_SERVER_URL: "http://<CHANGE_ME>/rundeck"
+            SERVER_URL: ${EXTERNAL_SERVER_URL}
+            RDECK_JVM_OPTS: "-Drundeck.jetty.connector.forwarded=true -Dserver.servlet.context-path=/rundeck"
+            NO_LOCAL_MYSQL: "true"
+            RUNDECK_STORAGE_PROVIDER: "db"
+            RUNDECK_PROJECT_STORAGE_TYPE: "db"
+            DATABASE_URL: "jdbc:mysql://mariadb/rundeckdb?autoReconnect=true"
+            DATABASE_ADMIN_USER: "root"
+            DATABASE_ADMIN_PASSWORD: "<CHANGE_ME>"
+            RUNDECK_PASSWORD: "<RUNDECK_DBPASSWORD_CHANGEME>"
+
+    nginx:
+        image: nginx:latest
+        container_name: nginx
+        links:
+            - rundeck
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        depends_on:
+            - rundeck
+        restart: on-failure:5
+        ports:
+            - 80:80
+            - 443:443
