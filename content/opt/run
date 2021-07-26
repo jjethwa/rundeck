@@ -304,7 +304,11 @@ if [ ! -f "${initfile}" ]; then
    fi
 
    if [ -n "${RUNDECK_SERVER_UUID}" ]; then
-      echo "rundeck.server.uuid=${RUNDECK_SERVER_UUID}" >> /etc/rundeck/framework.properties
+      if grep -q rundeck.server.uuid /etc/rundeck/framework.properties ; then
+        sed -i 's,rundeck.server.uuid \=.*,rundeck.server.uuid \= '${RUNDECK_SERVER_UUID}',g' /etc/rundeck/framework.properties
+      else
+        echo "rundeck.server.uuid = ${RUNDECK_SERVER_UUID}" >> /etc/rundeck/framework.properties
+      fi
    fi
 
    if [ "${CLUSTER_MODE}" == "true" ]; then
