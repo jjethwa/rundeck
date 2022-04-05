@@ -21,15 +21,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get -qqy install -t stretch-backports --no-install-recommends apt-transport-https curl ca-certificates && \
     curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash -s -- --mariadb-server-version=10.5 && \
     apt-get -qqy install -t stretch-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo openssh-client mariadb-server mariadb-client postgresql-9.6 postgresql-client-9.6 pwgen git uuid-runtime parallel jq && \
-    cd /tmp/ && \
-    curl -Lo /tmp/rundeck.deb https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck_3.4.10.20220118-1_all.deb/download.deb && \
-    echo '8d515fc1c973f2d4c7ab50684f281946059a319d4e5445ddbbb8c197ea8a42be  rundeck.deb' > /tmp/rundeck.sig && \
-    shasum -a256 -c /tmp/rundeck.sig && \
-    curl -Lo /tmp/rundeck-cli.deb https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck-cli_1.3.10-1_all.deb/download.deb && \
-    echo 'e9f6fb2cd051b32b452a055ce5aa7e354b21e011a9c00c76e3d624c2338a3736  rundeck-cli.deb' > /tmp/rundeck-cli.sig && \
-    shasum -a256 -c /tmp/rundeck-cli.sig && \
-    cd - && \
-    dpkg -i /tmp/rundeck*.deb && rm /tmp/rundeck*.deb && \
+    curl -s https://packagecloud.io/install/repositories/pagerduty/rundeck/script.deb.sh | os=any dist=any bash && \
+    apt-get -qqy install rundeck rundeck-cli && \
     mkdir -p /tmp/rundeck && \
     chown rundeck:rundeck /tmp/rundeck && \
     mkdir -p /var/lib/rundeck/.ssh && \
