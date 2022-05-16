@@ -28,8 +28,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     mkdir -p /var/lib/rundeck/.ssh && \
     chown rundeck:rundeck /var/lib/rundeck/.ssh && \
     sed -i "s/export RDECK_JVM=\"/export RDECK_JVM=\"\${RDECK_JVM} /" /etc/rundeck/profile && \
-    curl -Lo /var/lib/rundeck/libext/rundeck-slack-incoming-webhook-plugin-0.11.jar https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/releases/download/v0.11.dev/rundeck-slack-incoming-webhook-plugin-0.11.jar && \
-    echo 'efce8fa7891371bb8540b55d7eef645741566d411b3dbed43e9b7fe2e4d099a0  rundeck-slack-incoming-webhook-plugin-0.11.jar' > /tmp/rundeck-slack-plugin.sig && \
+    curl -Lo /var/lib/rundeck/libext/slack-incoming-webhook-plugin-1.2.5.jar https://github.com/rundeck-plugins/slack-incoming-webhook-plugin/releases/download/v1.2.5/slack-incoming-webhook-plugin-1.2.5.jar && \
+    echo 'e386b8cf06678ffee2c1282160efbdb5d51283e4d7c72f6fd0feb1f69f128532  slack-incoming-webhook-plugin-1.2.5.jar' > /tmp/rundeck-slack-plugin.sig && \
     cd /var/lib/rundeck/libext/ && \
     shasum -a256 -c /tmp/rundeck-slack-plugin.sig && \
     cd - && \
