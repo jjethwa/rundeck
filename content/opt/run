@@ -109,11 +109,11 @@ if [ ! -f "${initfile}" ]; then
    if [ "${NO_LOCAL_MYSQL}" == "false" ]; then
       echo "=>Initializing local MySQL..."
       if [ "$(ls -A1 /var/lib/mysql|grep -v lost+found)" ]; then
-         /etc/init.d/mariadb start
+         service mariadb start
       else
          echo "=>MySQL datadir is empty...initializing"
          /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-         /etc/init.d/mariadb start
+         service mariadb start
      fi
 
      (
@@ -123,9 +123,9 @@ if [ ! -f "${initfile}" ]; then
      ) |
      mysql
      sleep 5
-     /etc/init.d/mariadb stop
+     service mariadb stop
      # Add MySQL to supervisord conf
-     cat /opt/mysql.conf >> /etc/supervisor/conf.d/rundeck.conf
+     cat /opt/mariadb.conf >> /etc/supervisor/conf.d/rundeck.conf
    else
       echo "=>NO_LOCAL_MYSQL set to true.  Skipping local MySQL setup"
       if [[ "${DATABASE_URL}" == *"mysql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
