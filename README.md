@@ -5,7 +5,7 @@ This repository contains the source for the [Rundeck](http://rundeck.org/) [dock
 
 # Image details
 
-1. Based on debian:stretch
+1. Based on debian:bullseye
 1. Supervisor, MariaDB, and rundeck
 1. It can take anywhere from 30 seconds to a few minutes for Rundeck to start depending on the available resources for the container (and host VM).
 1. No SSH.  Use docker exec or [nsenter](https://github.com/jpetazzo/nsenter)
