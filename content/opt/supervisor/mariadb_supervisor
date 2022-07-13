@@ -1,0 +1,16 @@
+#!/bin/bash
+
+function shutdown()
+{
+    echo "`date +"%d.%m.%Y %T.%3N"` - Shutting down mariadb"
+    service mariadb stop
+}
+
+echo "`date +"%d.%m.%Y %T.%3N"` - Starting mariadb"
+
+service mariadb start
+
+# Allow any signal which would kill a process to stop server
+trap "service mariadb stop" HUP INT QUIT ABRT ALRM TERM TSTP
+
+while pgrep -u mysql mariadb > /dev/null; do sleep 5; done

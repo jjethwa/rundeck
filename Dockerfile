@@ -1,7 +1,7 @@
 # Dockerfile for rundeck
 # https://github.com/jjethwa/rundeck
 
-FROM debian:stretch
+FROM debian:bullseye
 
 MAINTAINER Jordan Jethwa
 
@@ -16,11 +16,11 @@ ENV SERVER_URL=https://localhost:4443 \
     CLUSTER_MODE=false
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    echo "deb http://ftp.debian.org/debian stretch-backports main" >> /etc/apt/sources.list && \
+    echo "deb http://ftp.debian.org/debian bullseye-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \
-    apt-get -qqy install -t stretch-backports --no-install-recommends apt-transport-https curl ca-certificates && \
+    apt-get -qqy install -t bullseye-backports --no-install-recommends apt-transport-https curl ca-certificates && \
     curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash -s -- --mariadb-server-version=10.5 && \
-    apt-get -qqy install -t stretch-backports --no-install-recommends bash openjdk-8-jre-headless ca-certificates-java supervisor procps sudo openssh-client mariadb-server mariadb-client postgresql-9.6 postgresql-client-9.6 pwgen git uuid-runtime parallel jq libxml2-utils html2text && \
+    apt-get -qqy install -t bullseye-backports --no-install-recommends bash openjdk-11-jre-headless ca-certificates-java supervisor procps sudo openssh-client mariadb-server mariadb-client postgresql postgresql-client pwgen git uuid-runtime parallel jq libxml2-utils html2text && \
     curl -s https://packagecloud.io/install/repositories/pagerduty/rundeck/script.deb.sh | os=any dist=any bash && \
     apt-get -qqy install rundeck rundeck-cli && \
     mkdir -p /tmp/rundeck && \
@@ -39,7 +39,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 ADD content/ /
 RUN chmod u+x /opt/run && \
     mkdir -p /var/log/supervisor && mkdir -p /opt/supervisor && \
-    chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mysql_supervisor && chmod u+x /opt/supervisor/fatalservicelistener
+    chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mariadb_supervisor && chmod u+x /opt/supervisor/fatalservicelistener
 
 EXPOSE 4440 4443
 
