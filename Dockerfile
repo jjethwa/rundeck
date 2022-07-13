@@ -39,7 +39,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 ADD content/ /
 RUN chmod u+x /opt/run && \
     mkdir -p /var/log/supervisor && mkdir -p /opt/supervisor && \
-    chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mysql_supervisor && chmod u+x /opt/supervisor/fatalservicelistener
+    chmod u+x /opt/supervisor/rundeck && chmod u+x /opt/supervisor/mariadb_supervisor && chmod u+x /opt/supervisor/fatalservicelistener
 
 EXPOSE 4440 4443
 
