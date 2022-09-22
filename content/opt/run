@@ -65,7 +65,6 @@ if [ ! -f "${initfile}" ]; then
    DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
    DATABASE_ADMIN_USER=${DATABASE_ADMIN_USER:-rundeck}
    RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
-   #RUNDECK_PROJECT_STORAGE_TYPE=${RUNDECK_PROJECT_STORAGE_TYPE:-"file"}
    NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
    SKIP_DATABASE_SETUP=${SKIP_DATABASE_SETUP:-"false"}
    LOGIN_MODULE=${LOGIN_MODULE:-"RDpropertyfilelogin"}
@@ -295,14 +294,6 @@ if [ ! -f "${initfile}" ]; then
       fi
    fi
 
-#   if [ "${RUNDECK_PROJECT_STORAGE_TYPE}" == "db" ]; then
-#      if grep -q rundeck.projectsStorageType /etc/rundeck/rundeck-config.properties ; then
-#        sed -i 's/rundeck\.projectsStorageType.*$/rundeck\.projectsStorageType='${RUNDECK_PROJECT_STORAGE_TYPE}'/g' /etc/rundeck/rundeck-config.properties
-#      else
-#        echo "rundeck.projectsStorageType=db" >> /etc/rundeck/rundeck-config.properties
-#      fi
-#   fi
-
    if [ -n "${RUNDECK_SERVER_UUID}" ]; then
       if grep -q rundeck.server.uuid /etc/rundeck/framework.properties ; then
         sed -i 's,rundeck.server.uuid \=.*,rundeck.server.uuid \= '${RUNDECK_SERVER_UUID}',g' /etc/rundeck/framework.properties
@@ -337,7 +328,6 @@ if [ ! -f "${initfile}" ]; then
       echo "MySQL user 'root' has no password but only allows local connections"
    fi
    echo "MySQL user '${RUNDECK_USER}' password set to ${RUNDECK_PASSWORD}"
-#   echo "Rundeck project storage type set to ${RUNDECK_PROJECT_STORAGE_TYPE}"
    echo "Rundeck Storage provider set to ${RUNDECK_STORAGE_PROVIDER}"
    echo "Rundeck public key:"
    cat /var/lib/rundeck/.ssh/id_rsa.pub
