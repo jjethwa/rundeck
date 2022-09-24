@@ -144,6 +144,9 @@ SKIP_DATABASE_SETUP=true
 If your SCM settings are getting lost after each restart as mentioned here: https://github.com/rundeck/rundeck/issues/6646 and https://github.com/rundeck/rundeck/issues/6651
 
 Add `rundeck.server.uuid` to your framework.properties.  You can get your server UUID from the System Report page.
+```
+rundeck.server.uuid = <YOUR_CURRENT_RUNDECK_UUID>
+```
 
 # Using an SSL Terminated Proxy
 See: http://rundeck.org/docs/administration/configuring-ssl.html#using-an-ssl-terminated-proxy
