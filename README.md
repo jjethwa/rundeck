@@ -105,6 +105,7 @@ SKIP_DATABASE_SETUP - Set to true if database is already setup and/or database a
 /opt/rundeck-plugins - For adding external plugins
 /var/lib/rundeck/logs
 /var/lib/rundeck/var/storage
+/var/lib/rundeck/projects
 ```
 
 # Working behind a web proxy
@@ -138,6 +139,11 @@ from OPTION 1:
 ```
 SKIP_DATABASE_SETUP=true
 ```
+
+# Preserve SCM setting across restarts
+If your SCM settings are getting lost after each restart as mentioned here: https://github.com/rundeck/rundeck/issues/6646 and https://github.com/rundeck/rundeck/issues/6651
+
+Add `rundeck.server.uuid` to your framework.properties.  You can get your server UUID from the System Report page.
 
 # Using an SSL Terminated Proxy
 See: http://rundeck.org/docs/administration/configuring-ssl.html#using-an-ssl-terminated-proxy
