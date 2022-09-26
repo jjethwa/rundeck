@@ -66,6 +66,8 @@ RUNDECK_PASSWORD - MySQL 'rundeck' user password
 
 RUNDECK_ADMIN_PASSWORD - The rundeck server admin password
 
+RUNDECK_SERVER_UUID - The UUID of the server (set in framework.properties)
+
 RUNDECK_STORAGE_PROVIDER - Options file (default) or db.  See: http://rundeck.org/docs/plugins-user-guide/configuring.html#storage-plugins
 
 RUNDECK_THREAD_COUNT = Number of threads that are available for concurrent execution of jobs. see: http://www.quartz-scheduler.org/documentation/quartz-2.x/configuration/ConfigThreadPool.html
@@ -143,7 +145,7 @@ SKIP_DATABASE_SETUP=true
 # Preserve SCM setting across restarts
 If your SCM settings are getting lost after each restart as mentioned here: https://github.com/rundeck/rundeck/issues/6646 and https://github.com/rundeck/rundeck/issues/6651
 
-Add `rundeck.server.uuid` to your framework.properties.  You can get your server UUID from the System Report page.
+Add `rundeck.server.uuid` to your framework.properties using the `RUNDECK_SERVER_UUID` environment variable.  You can get your server UUID from the System Report page.
 ```
 rundeck.server.uuid = <YOUR_CURRENT_RUNDECK_UUID>
 ```
