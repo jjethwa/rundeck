@@ -261,6 +261,13 @@ if [ ! -f "${initfile}" ]; then
    sed -i 's,framework.server.hostname\ \=.*,framework.server.hostname\ \=\ '${SERVER_HOSTNAME}',g' /etc/rundeck/framework.properties
    sed -i 's,framework.server.port\ \=.*,framework.server.port\ \=\ '${SERVER_PORT}',g' /etc/rundeck/framework.properties
    sed -i 's,framework.server.url\ \=.*,framework.server.url\ \=\ '${SERVER_URL}',g' /etc/rundeck/framework.properties
+   if [ -n "${RUNDECK_SERVER_UUID}" ]; then
+      if grep -q rundeck.server.uuid /etc/rundeck/framework.properties ; then
+        sed -i 's/rundeck\.server\.uuid.*$/rundeck\.server\.uuid = '${RUNDECK_SERVER_UUID}'/g' /etc/rundeck/framework.properties
+      else
+        echo "quartz.threadPool.threadCount = ${RUNDECK_THREAD_COUNT}" >> /etc/rundeck/rundeck-config.properties
+      fi
+   fi
 
    # if the admin pwd is still the default password and RUNDECK_ADMIN_PASSWORD is defined
    if $(grep --silent '^admin:admin,' /etc/rundeck/realm.properties) && [[ -n "${RUNDECK_ADMIN_PASSWORD}" ]]; then
