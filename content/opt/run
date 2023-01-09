@@ -65,7 +65,7 @@ if [ ! -f "${initfile}" ]; then
    DATABASE_ADMIN_PASSWORD=${DATABASE_ADMIN_PASSWORD:-${RUNDECK_PASSWORD}}
    DATABASE_ADMIN_USER=${DATABASE_ADMIN_USER:-rundeck}
    RUNDECK_STORAGE_PASSWORD=${RUNDECK_STORAGE_PASSWORD:-$(pwgen -s 15 1)}
-   RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"file"}
+   RUNDECK_STORAGE_PROVIDER=${RUNDECK_STORAGE_PROVIDER:-"db"}
    NO_LOCAL_MYSQL=${NO_LOCAL_MYSQL:-"false"}
    SKIP_DATABASE_SETUP=${SKIP_DATABASE_SETUP:-"false"}
    LOGIN_MODULE=${LOGIN_MODULE:-"RDpropertyfilelogin"}
@@ -295,10 +295,20 @@ if [ ! -f "${initfile}" ]; then
       else
         echo "rundeck.storage.provider.1.type=db" >> /etc/rundeck/rundeck-config.properties
       fi
-      if grep -q rundeck.storage.provider.1.path /etc/rundeck/rundeck-config.properties ; then
+      if grep -q rundeck.config.storage.converter.1.path /etc/rundeck/rundeck-config.properties ; then
         :
       else
-        echo "rundeck.storage.provider.1.path=/" >> /etc/rundeck/rundeck-config.properties
+        echo "rundeck.config.storage.converter.1.path=/" >> /etc/rundeck/rundeck-config.properties
+      fi
+      if grep -q rundeck.storage.converter.1.config.password /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/rundeck\.storage\.converter\.1\.config\.password.*$/rundeck\.storage\.converter\.1\.config\.password='${RUNDECK_STORAGE_PASSWORD}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "rundeck.storage.converter.1.config.password=${RUNDECK_STORAGE_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
+      fi
+      if grep -q rundeck.config.storage.converter.1.config.password /etc/rundeck/rundeck-config.properties ; then
+        sed -i 's/rundeck\.config\.storage\.converter\.1\.config\.password.*$/rundeck\.config\.storage\.converter\.1\.config\.password='${RUNDECK_STORAGE_PASSWORD}'/g' /etc/rundeck/rundeck-config.properties
+      else
+        echo "rundeck.config.storage.converter.1.config.password=${RUNDECK_STORAGE_PASSWORD}" >> /etc/rundeck/rundeck-config.properties
       fi
    fi
 
