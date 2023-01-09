@@ -27,6 +27,7 @@ services:
             SERVER_URL: ${EXTERNAL_SERVER_URL}
             RDECK_JVM_OPTS: "-Drundeck.jetty.connector.forwarded=true -Dserver.servlet.context-path=/rundeck"
             NO_LOCAL_MYSQL: "true"
+            RUNDECK_STORAGE_PASSWORD: "<RUNDECK_STORAGE_PASSWORD_CHANGEME>"
             RUNDECK_STORAGE_PROVIDER: "db"
             RUNDECK_PROJECT_STORAGE_TYPE: "db"
             DATABASE_URL: "jdbc:mysql://mariadb/rundeckdb?autoReconnect=true"
