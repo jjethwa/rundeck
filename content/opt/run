@@ -57,6 +57,9 @@ if [ ! -f "${initfile}" ]; then
   if [ -f /run/secrets/RUNDECK_ADMIN_PASSWORD ]; then
     RUNDECK_ADMIN_PASSWORD=$(< /run/secrets/RUNDECK_ADMIN_PASSWORD)
   fi
+  if [ -f /run/secrets/RUNDECK_STORAGE_PASSWORD ]; then
+    RUNDECK_STORAGE_PASSWORD=$(< /run/secrets/RUNDECK_STORAGE_PASSWORD)
+  fi
 
    DATABASE_URL=${DATABASE_URL:-"jdbc:mysql://localhost/rundeckdb?autoReconnect=true"}
    DATABASE_DRIVER=${DATABASE_DRIVER:-"org.mariadb.jdbc.Driver"}
