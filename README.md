@@ -70,7 +70,7 @@ RUNDECK_SERVER_UUID - The UUID of the server (set in framework.properties)
 
 RUNDECK_STORAGE_PASSWORD - The password used for project and key encryption (set in rundeck-config.properties)
 
-RUNDECK_STORAGE_PROVIDER - Options file (default) or db.  See: http://rundeck.org/docs/plugins-user-guide/configuring.html#storage-plugins
+RUNDECK_STORAGE_PROVIDER - Options db (default) or file.  Note: file storage looks like it will be deprecated in future releases
 
 RUNDECK_THREAD_COUNT = Number of threads that are available for concurrent execution of jobs. see: http://www.quartz-scheduler.org/documentation/quartz-2.x/configuration/ConfigThreadPool.html
 
@@ -132,7 +132,6 @@ OPTION 1: First time setup of external database, you must follow the steps below
 ```
 NO_LOCAL_MYSQL=true
 RUNDECK_STORAGE_PASSWORD=<STORAGE_PASSWORD>
-RUNDECK_STORAGE_PROVIDER=<db_OR_file>
 DATABASE_URL=<MYSQL_OR_POSTGRES_JDBC_URL>
 DATABASE_ADMIN_USER=<DATABASE_ADMIN_USER>
 DATABASE_ADMIN_PASSWORD=<DATABASE_ADMIN_PASSWORD>
