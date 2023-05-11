@@ -16,7 +16,7 @@ This repository contains the source for the [Rundeck](http://rundeck.org/) [dock
 
 
 # Automated build
-
+Images are built using GitHub Actions and pushed automatically to Docker Hub
 ```
 docker pull jordan/rundeck
 ```
