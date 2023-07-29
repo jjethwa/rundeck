@@ -161,4 +161,4 @@ See: http://rundeck.org/docs/administration/configuring-ssl.html#using-an-ssl-te
 See: http://rundeck.org/docs/upgrading/index.html
 
 # Default credentials
-admin/admin
+```admin/admin```
