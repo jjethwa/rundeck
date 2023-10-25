@@ -5,6 +5,8 @@ rundeck
 
 This repository contains the source for the [Rundeck](http://rundeck.org/) [docker](https://docker.io) image.
 
+Latest version: 4.17.1
+
 # Image details
 
 1. Based on debian:bullseye
