@@ -5,7 +5,7 @@ rundeck
 
 This repository contains the source for the [Rundeck](http://rundeck.org/) [docker](https://docker.io) image.
 
-Latest version: 5.0.1
+Latest version: 5.1.0
 
 # Image details
 
