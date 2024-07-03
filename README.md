@@ -76,7 +76,7 @@ RUNDECK_STORAGE_PASSWORD - The password used for project and key encryption (set
 
 RUNDECK_STORAGE_PROVIDER - Options db (default) or file.  Note: file storage looks like it will be deprecated in future releases
 
-RUNDECK_THREAD_COUNT = Number of threads that are available for concurrent execution of jobs. see: http://www.quartz-scheduler.org/documentation/quartz-2.x/configuration/ConfigThreadPool.html
+RUNDECK_THREAD_COUNT = Number of threads that are available for concurrent execution of jobs. see: https://docs.rundeck.com/docs/administration/maintenance/tuning-rundeck.html#quartz-job-threadcount
 
 GUI_BRAND_HTML - HTML to show as title in app header. See: https://rundeck.org/docs/administration/configuration/gui-customization.html. Useful to show Rundeck environment where multiple Rundeck instances are deployed, e.g. GUI_BRAND_HTML='<span class="title">QA Environment</span>'
 
