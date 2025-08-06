@@ -1,7 +1,7 @@
 # Dockerfile for rundeck
 # https://github.com/jjethwa/rundeck
 
-FROM debian:bullseye
+FROM debian:bookworm
 
 MAINTAINER Jordan Jethwa
 
@@ -15,11 +15,11 @@ ENV SERVER_URL=https://localhost:4443 \
     CLUSTER_MODE=false
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    echo "deb http://ftp.debian.org/debian bullseye-backports main" >> /etc/apt/sources.list && \
+    echo "deb http://ftp.debian.org/debian bookworm-backports main" >> /etc/apt/sources.list && \
     apt-get -qq update && \
-    apt-get -qqy install -t bullseye-backports --no-install-recommends apt-transport-https curl ca-certificates && \
-    curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash -s -- --mariadb-server-version=10.5 && \
-    apt-get -qqy install -t bullseye-backports --no-install-recommends bash openjdk-11-jre-headless ca-certificates-java supervisor procps sudo openssh-client mariadb-server mariadb-client postgresql postgresql-client pwgen git uuid-runtime parallel jq libxml2-utils html2text unzip && \
+    apt-get -qqy install -t bookworm-backports --no-install-recommends apt-transport-https curl ca-certificates && \
+    curl -LsS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash -s -- --mariadb-server-version=10.11.13 && \
+    apt-get -qqy install -t bookworm-backports --no-install-recommends bash openjdk-17-jre-headless ca-certificates-java supervisor procps sudo openssh-client mariadb-server mariadb-client postgresql postgresql-client pwgen git uuid-runtime parallel jq libxml2-utils html2text unzip && \
     curl -s https://packagecloud.io/install/repositories/pagerduty/rundeck/script.deb.sh | os=any dist=any bash && \
     apt-get -qqy install rundeck rundeck-cli && \
     mkdir -p /tmp/rundeck && \
