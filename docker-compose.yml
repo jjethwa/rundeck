@@ -8,7 +8,7 @@ version: '3'
 
 services:
     mariadb:
-        image: mariadb:10.5.8
+        image: mariadb:10.11.13
         container_name: mariadb
         restart: on-failure:5
         environment:
