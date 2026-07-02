@@ -82,7 +82,7 @@ if [ ! -f "${initfile}" ]; then
       echo "FLUSH PRIVILEGES;"
       echo "quit"
       ) |
-      mysql
+      mariadb
    }
 
    echo "=>Initializing rundeck - This may take a few minutes"
@@ -114,7 +114,7 @@ if [ ! -f "${initfile}" ]; then
          service mariadb start
       else
          echo "=>MySQL datadir is empty...initializing"
-         /usr/bin/mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+         /usr/bin/mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
          service mariadb start
      fi
 
@@ -123,7 +123,7 @@ if [ ! -f "${initfile}" ]; then
      echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO '${RUNDECK_USER}'@'localhost' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
      echo "quit"
      ) |
-     mysql
+     mariadb
      sleep 5
      service mariadb stop
      # Add MySQL to supervisord conf
@@ -144,7 +144,7 @@ if [ ! -f "${initfile}" ]; then
              echo "GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, CREATE VIEW, ALTER, INDEX, EXECUTE ON rundeckdb.* TO '${RUNDECK_USER}'@'%' IDENTIFIED BY '${RUNDECK_PASSWORD}';"
              echo "quit"
              ) |
-         mysql --host=${MYSQL_SERVER_NODE} --port=${MYSQL_SERVER_PORT} --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
+         mariadb --host=${MYSQL_SERVER_NODE} --port=${MYSQL_SERVER_PORT} --user=${DATABASE_ADMIN_USER} --password=${DATABASE_ADMIN_PASSWORD}
       elif [[ "${DATABASE_URL}" == *"postgresql"* && "${SKIP_DATABASE_SETUP}" != "true" ]]; then
         DATABASE_DRIVER="org.postgresql.Driver"
         PSQL_CNX_STRING=$(echo ${DATABASE_URL} | grep -oP "(?<=jdbc:postgresql:\/\/)(.*)(?=\/)")
